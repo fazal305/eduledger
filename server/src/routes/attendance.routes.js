@@ -11,11 +11,19 @@ import {
 
 const router = Router()
 
-router.use(requireAuth, requireRole('admin', 'staff', 'teacher'))
+router.use(requireAuth)
 
-router.get('/', validateQuery(attendanceQuerySchema), getAttendanceHandler)
-router.post('/', validateBody(bulkAttendanceSchema), saveAttendanceHandler)
-router.get('/students/:studentId/summary', getStudentSummaryHandler)
-router.get('/students/:studentId/history', getStudentHistoryHandler)
+router.get('/', requireRole('admin', 'staff', 'teacher'), validateQuery(attendanceQuerySchema), getAttendanceHandler)
+router.post('/', requireRole('admin', 'staff', 'teacher'), validateBody(bulkAttendanceSchema), saveAttendanceHandler)
+router.get(
+  '/students/:studentId/summary',
+  requireRole('admin', 'staff', 'teacher', 'parent', 'student'),
+  getStudentSummaryHandler,
+)
+router.get(
+  '/students/:studentId/history',
+  requireRole('admin', 'staff', 'teacher', 'parent', 'student'),
+  getStudentHistoryHandler,
+)
 
 export default router

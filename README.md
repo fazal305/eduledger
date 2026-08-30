@@ -6,9 +6,9 @@ A serious, production-shaped school/academy management system: role-based portal
 admins, staff, teachers, parents, and students, backed by a properly normalized MySQL
 schema — not a demo dashboard with fake charts.
 
-> **Status:** Phase 4 — Finance. Auth, the database schema, core academic data, academic
-> operations (attendance/exams/marks/report cards), and fees/payments are all in place;
-> the parent/student portals land in Phase 5 (see Roadmap).
+> **Status:** Phase 5 — Portals. Auth, the database schema, core academic data, academic
+> operations, fees/payments, and the parent/student self-service portals are all in place;
+> UX/accessibility polish and production deployment land in Phases 6–7 (see Roadmap).
 
 ## Overview
 
@@ -54,9 +54,13 @@ linked to more than one student, and students can have more than one guardian.
   monetary columns use `DECIMAL(10,2)`, never floating point
 - Fee summary (total billed / collected / outstanding) on the Fees page and the admin
   dashboard, plus a per-student fee snapshot on the student profile
+- Parent and student portals: overview (classes, attendance summary, fee status),
+  attendance history, marks/report card, and fee/payment history — all self-scoped.
+  A parent with multiple children gets a child selector; every underlying endpoint
+  re-verifies ownership server-side (`assertCanViewStudent`), not just the UI — a parent
+  or student cannot reach another family's data by guessing an ID in the URL or API
 
 **Planned**
-- Full parent/student portals (Phase 5)
 - Accessibility/responsive polish pass (Phase 6)
 - Production deployment to Netlify (frontend + Functions) with a hosted MySQL database (Phase 7)
 

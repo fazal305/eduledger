@@ -3,7 +3,9 @@ import { pool } from '../config/db.js'
 const LIST_COLUMNS = `
   e.id, e.student_id, e.class_id, e.enrolled_at, e.status, e.created_at,
   s.student_number, s.first_name AS student_first_name, s.last_name AS student_last_name,
-  co.name AS course_name, sec.name AS section_name, ay.name AS academic_year_name
+  co.name AS course_name, sec.name AS section_name, ay.name AS academic_year_name,
+  cl.schedule_day, cl.start_time, cl.end_time, cl.room,
+  CONCAT(t.first_name, ' ', t.last_name) AS teacher_name
 `
 
 const JOINS = `
@@ -12,6 +14,7 @@ const JOINS = `
   JOIN courses co ON co.id = cl.course_id
   JOIN sections sec ON sec.id = cl.section_id
   JOIN academic_years ay ON ay.id = cl.academic_year_id
+  LEFT JOIN teachers t ON t.id = cl.teacher_id
 `
 
 export async function listEnrollments({ studentId, classId, status, limit, offset }) {
