@@ -6,9 +6,9 @@ A serious, production-shaped school/academy management system: role-based portal
 admins, staff, teachers, parents, and students, backed by a properly normalized MySQL
 schema — not a demo dashboard with fake charts.
 
-> **Status:** Phase 3 — Academic Operations. Auth, the database schema, core academic
-> data (students/teachers/courses/classes/enrollments), and attendance/exams/marks/report
-> cards are in place; fees and the parent/student portals land in later phases (see Roadmap).
+> **Status:** Phase 4 — Finance. Auth, the database schema, core academic data, academic
+> operations (attendance/exams/marks/report cards), and fees/payments are all in place;
+> the parent/student portals land in Phase 5 (see Roadmap).
 
 ## Overview
 
@@ -46,9 +46,16 @@ linked to more than one student, and students can have more than one guardian.
 - Printable report card per student (per academic year): marks by subject, attendance
   summary, and an overall pass/fail result — uses the browser's native print dialog
   ("Print / Save as PDF"), no PDF library needed
+- Fees: create a fee for a student (type, academic year, amount, due date); status
+  (pending/partially paid/paid/overdue) is derived from payments and due date, not
+  hand-maintained — "overdue" is computed at read time so it never goes stale
+- Payments: record a payment against a fee (amount, date, method, reference); the API
+  rejects any payment that would exceed the fee's remaining balance (`400`); all
+  monetary columns use `DECIMAL(10,2)`, never floating point
+- Fee summary (total billed / collected / outstanding) on the Fees page and the admin
+  dashboard, plus a per-student fee snapshot on the student profile
 
 **Planned**
-- Fees, payments, and outstanding-balance reporting (Phase 4)
 - Full parent/student portals (Phase 5)
 - Accessibility/responsive polish pass (Phase 6)
 - Production deployment to Netlify (frontend + Functions) with a hosted MySQL database (Phase 7)

@@ -7,8 +7,16 @@ import Badge from '../../../components/ui/Badge'
 import ConfirmDialog from '../../../components/ui/ConfirmDialog'
 import { fetchStudent, setStudentActive } from '../../../services/studentService'
 import { fetchEnrollments, dropEnrollment } from '../../../services/enrollmentService'
+import { fetchFees } from '../../../services/feeService'
 import StudentFormModal from './StudentFormModal'
 import EnrollStudentModal from './EnrollStudentModal'
+
+const FEE_STATUS_TONE = { paid: 'success', partially_paid: 'warning', pending: 'neutral', overdue: 'danger' }
+const FEE_STATUS_LABEL = { paid: 'Paid', partially_paid: 'Partially paid', pending: 'Pending', overdue: 'Overdue' }
+
+function money(value) {
+  return Number(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
 
 export default function StudentProfilePage() {
   const { id } = useParams()
@@ -27,6 +35,12 @@ export default function StudentProfilePage() {
   const { data: enrollments } = useQuery({
     queryKey: ['enrollments', { studentId }],
     queryFn: () => fetchEnrollments({ studentId, status: 'active' }),
+    enabled: !!studentId,
+  })
+
+  const { data: fees } = useQuery({
+    queryKey: ['fees', { studentId }],
+    queryFn: () => fetchFees({ studentId, pageSize: 10 }),
     enabled: !!studentId,
   })
 
@@ -133,6 +147,27 @@ export default function StudentProfilePage() {
                   >
                     Drop
                   </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <section className="rounded-xl border border-ink-100 bg-white p-5 lg:col-span-1">
+          <h3 className="mb-3 text-sm font-semibold text-ink-900">Fees</h3>
+          {!fees || fees.data.length === 0 ? (
+            <p className="text-sm text-ink-400">No fees recorded yet.</p>
+          ) : (
+            <ul className="space-y-3 text-sm">
+              {fees.data.map((f) => (
+                <li key={f.id} className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-ink-800">{f.fee_type_name}</p>
+                    <p className="text-ink-500">
+                      {money(f.remaining_amount)} remaining of {money(f.amount)}
+                    </p>
+                  </div>
+                  <Badge tone={FEE_STATUS_TONE[f.status]}>{FEE_STATUS_LABEL[f.status]}</Badge>
                 </li>
               ))}
             </ul>

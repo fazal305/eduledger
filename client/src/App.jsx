@@ -23,6 +23,7 @@ import AttendancePage from './pages/shared/AttendancePage'
 import ExamsListPage from './pages/shared/ExamsListPage'
 import MarksEntryPage from './pages/shared/MarksEntryPage'
 import ReportCardPage from './pages/shared/ReportCardPage'
+import FeesListPage from './pages/admin/fees/FeesListPage'
 
 const HOME_BY_ROLE = {
   admin: '/admin',
@@ -61,6 +62,7 @@ export default function App() {
           <Route path="/admin/attendance" element={<AttendancePage />} />
           <Route path="/admin/exams" element={<ExamsListPage />} />
           <Route path="/admin/exams/:examId/marks" element={<MarksEntryPage />} />
+          <Route path="/admin/fees" element={<FeesListPage />} />
         </Route>
       </Route>
 
@@ -71,6 +73,7 @@ export default function App() {
           <Route path="/staff/students/:id" element={<StudentProfilePage />} />
           <Route path="/staff/students/:id/report-card" element={<ReportCardPage />} />
           <Route path="/staff/attendance" element={<AttendancePage />} />
+          <Route path="/staff/fees" element={<FeesListPage />} />
         </Route>
       </Route>
 
