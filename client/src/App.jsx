@@ -12,6 +12,13 @@ import ParentOverviewPage from './pages/parent/ParentOverviewPage'
 import StudentOverviewPage from './pages/student/StudentOverviewPage'
 import NotFoundPage from './pages/NotFoundPage'
 import UnauthorizedPage from './pages/UnauthorizedPage'
+import StudentsListPage from './pages/admin/students/StudentsListPage'
+import StudentProfilePage from './pages/admin/students/StudentProfilePage'
+import TeachersListPage from './pages/admin/teachers/TeachersListPage'
+import TeacherProfilePage from './pages/admin/teachers/TeacherProfilePage'
+import CoursesListPage from './pages/admin/courses/CoursesListPage'
+import ClassesListPage from './pages/admin/classes/ClassesListPage'
+import ClassProfilePage from './pages/admin/classes/ClassProfilePage'
 
 const HOME_BY_ROLE = {
   admin: '/admin',
@@ -39,12 +46,21 @@ export default function App() {
       <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
         <Route element={<AppShell />}>
           <Route path="/admin" element={<AdminDashboardPage />} />
+          <Route path="/admin/students" element={<StudentsListPage />} />
+          <Route path="/admin/students/:id" element={<StudentProfilePage />} />
+          <Route path="/admin/teachers" element={<TeachersListPage />} />
+          <Route path="/admin/teachers/:id" element={<TeacherProfilePage />} />
+          <Route path="/admin/courses" element={<CoursesListPage />} />
+          <Route path="/admin/classes" element={<ClassesListPage />} />
+          <Route path="/admin/classes/:id" element={<ClassProfilePage />} />
         </Route>
       </Route>
 
       <Route element={<ProtectedRoute allowedRoles={['staff']} />}>
         <Route element={<AppShell />}>
           <Route path="/staff" element={<StaffDashboardPage />} />
+          <Route path="/staff/students" element={<StudentsListPage />} />
+          <Route path="/staff/students/:id" element={<StudentProfilePage />} />
         </Route>
       </Route>
 
