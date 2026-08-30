@@ -19,6 +19,10 @@ import TeacherProfilePage from './pages/admin/teachers/TeacherProfilePage'
 import CoursesListPage from './pages/admin/courses/CoursesListPage'
 import ClassesListPage from './pages/admin/classes/ClassesListPage'
 import ClassProfilePage from './pages/admin/classes/ClassProfilePage'
+import AttendancePage from './pages/shared/AttendancePage'
+import ExamsListPage from './pages/shared/ExamsListPage'
+import MarksEntryPage from './pages/shared/MarksEntryPage'
+import ReportCardPage from './pages/shared/ReportCardPage'
 
 const HOME_BY_ROLE = {
   admin: '/admin',
@@ -53,6 +57,10 @@ export default function App() {
           <Route path="/admin/courses" element={<CoursesListPage />} />
           <Route path="/admin/classes" element={<ClassesListPage />} />
           <Route path="/admin/classes/:id" element={<ClassProfilePage />} />
+          <Route path="/admin/students/:id/report-card" element={<ReportCardPage />} />
+          <Route path="/admin/attendance" element={<AttendancePage />} />
+          <Route path="/admin/exams" element={<ExamsListPage />} />
+          <Route path="/admin/exams/:examId/marks" element={<MarksEntryPage />} />
         </Route>
       </Route>
 
@@ -61,12 +69,19 @@ export default function App() {
           <Route path="/staff" element={<StaffDashboardPage />} />
           <Route path="/staff/students" element={<StudentsListPage />} />
           <Route path="/staff/students/:id" element={<StudentProfilePage />} />
+          <Route path="/staff/students/:id/report-card" element={<ReportCardPage />} />
+          <Route path="/staff/attendance" element={<AttendancePage />} />
         </Route>
       </Route>
 
       <Route element={<ProtectedRoute allowedRoles={['teacher']} />}>
         <Route element={<AppShell />}>
           <Route path="/teacher" element={<TeacherDashboardPage />} />
+          <Route path="/teacher/classes" element={<ClassesListPage />} />
+          <Route path="/teacher/classes/:id" element={<ClassProfilePage />} />
+          <Route path="/teacher/attendance" element={<AttendancePage />} />
+          <Route path="/teacher/marks" element={<ExamsListPage />} />
+          <Route path="/teacher/marks/:examId/marks" element={<MarksEntryPage />} />
         </Route>
       </Route>
 

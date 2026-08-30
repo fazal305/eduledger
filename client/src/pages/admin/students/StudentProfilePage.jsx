@@ -83,6 +83,9 @@ export default function StudentProfilePage() {
             <Button variant={student.is_active ? 'danger' : 'primary'} onClick={() => setConfirmArchive(true)}>
               {student.is_active ? 'Archive' : 'Reactivate'}
             </Button>
+            <Link to="report-card" className="ml-auto self-center text-sm font-medium text-brand-600 hover:underline">
+              Report card →
+            </Link>
           </div>
         </section>
 

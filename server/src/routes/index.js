@@ -6,6 +6,8 @@ import teacherRoutes from './teacher.routes.js'
 import courseRoutes from './course.routes.js'
 import classRoutes from './class.routes.js'
 import enrollmentRoutes from './enrollment.routes.js'
+import attendanceRoutes from './attendance.routes.js'
+import examRoutes from './exam.routes.js'
 
 const router = Router()
 
@@ -16,5 +18,7 @@ router.use('/teachers', teacherRoutes)
 router.use('/courses', courseRoutes)
 router.use('/classes', classRoutes)
 router.use('/enrollments', enrollmentRoutes)
+router.use('/attendance', attendanceRoutes)
+router.use('/exams', examRoutes)
 
 export default router

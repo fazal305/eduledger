@@ -6,6 +6,7 @@ import {
   editStudent,
   archiveStudent,
 } from '../services/student.service.js'
+import { buildReportCard } from '../services/reportCard.service.js'
 
 export const listStudentsHandler = asyncHandler(async (req, res) => {
   res.json(await getStudents(req.validatedQuery))
@@ -28,4 +29,10 @@ export const updateStudentHandler = asyncHandler(async (req, res) => {
 export const setStudentActiveHandler = asyncHandler(async (req, res) => {
   const student = await archiveStudent(Number(req.params.id), req.body.isActive)
   res.json({ data: student })
+})
+
+export const getReportCardHandler = asyncHandler(async (req, res) => {
+  const academicYearId = req.query.academicYearId ? Number(req.query.academicYearId) : undefined
+  const reportCard = await buildReportCard(Number(req.params.id), academicYearId)
+  res.json({ data: reportCard })
 })
