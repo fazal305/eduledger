@@ -10,10 +10,15 @@ import {
 
 const router = Router()
 
-router.use(requireAuth, requireRole('admin', 'staff'))
+router.use(requireAuth)
 
-router.get('/', validateQuery(enrollmentListQuerySchema), listEnrollmentsHandler)
-router.post('/', validateBody(enrollmentSchema), createEnrollmentHandler)
-router.patch('/:id/drop', dropEnrollmentHandler)
+router.get(
+  '/',
+  requireRole('admin', 'staff', 'parent', 'student'),
+  validateQuery(enrollmentListQuerySchema),
+  listEnrollmentsHandler,
+)
+router.post('/', requireRole('admin', 'staff'), validateBody(enrollmentSchema), createEnrollmentHandler)
+router.patch('/:id/drop', requireRole('admin', 'staff'), dropEnrollmentHandler)
 
 export default router

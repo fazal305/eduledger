@@ -13,12 +13,17 @@ import {
 
 const router = Router()
 
-router.use(requireAuth, requireRole('admin', 'staff'))
+router.use(requireAuth)
 
-router.get('/summary', validateQuery(feeSummaryQuerySchema), getSummaryHandler)
-router.get('/', validateQuery(feeListQuerySchema), listFeesHandler)
-router.get('/:id', getFeeHandler)
-router.post('/', validateBody(feeSchema), createFeeHandler)
-router.post('/:id/payments', validateBody(paymentSchema), createPaymentHandler)
+router.get('/summary', requireRole('admin', 'staff'), validateQuery(feeSummaryQuerySchema), getSummaryHandler)
+router.get(
+  '/',
+  requireRole('admin', 'staff', 'parent', 'student'),
+  validateQuery(feeListQuerySchema),
+  listFeesHandler,
+)
+router.get('/:id', requireRole('admin', 'staff', 'parent', 'student'), getFeeHandler)
+router.post('/', requireRole('admin', 'staff'), validateBody(feeSchema), createFeeHandler)
+router.post('/:id/payments', requireRole('admin', 'staff'), validateBody(paymentSchema), createPaymentHandler)
 
 export default router

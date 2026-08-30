@@ -8,8 +8,6 @@ import LoginPage from './pages/auth/LoginPage'
 import AdminDashboardPage from './pages/admin/AdminDashboardPage'
 import StaffDashboardPage from './pages/staff/StaffDashboardPage'
 import TeacherDashboardPage from './pages/teacher/TeacherDashboardPage'
-import ParentOverviewPage from './pages/parent/ParentOverviewPage'
-import StudentOverviewPage from './pages/student/StudentOverviewPage'
 import NotFoundPage from './pages/NotFoundPage'
 import UnauthorizedPage from './pages/UnauthorizedPage'
 import StudentsListPage from './pages/admin/students/StudentsListPage'
@@ -24,6 +22,10 @@ import ExamsListPage from './pages/shared/ExamsListPage'
 import MarksEntryPage from './pages/shared/MarksEntryPage'
 import ReportCardPage from './pages/shared/ReportCardPage'
 import FeesListPage from './pages/admin/fees/FeesListPage'
+import PortalOverviewPage from './pages/shared/portal/PortalOverviewPage'
+import PortalAttendancePage from './pages/shared/portal/PortalAttendancePage'
+import PortalMarksPage from './pages/shared/portal/PortalMarksPage'
+import PortalFeesPage from './pages/shared/portal/PortalFeesPage'
 
 const HOME_BY_ROLE = {
   admin: '/admin',
@@ -90,13 +92,19 @@ export default function App() {
 
       <Route element={<ProtectedRoute allowedRoles={['parent']} />}>
         <Route element={<PortalShell />}>
-          <Route path="/parent" element={<ParentOverviewPage />} />
+          <Route path="/parent" element={<PortalOverviewPage />} />
+          <Route path="/parent/attendance" element={<PortalAttendancePage />} />
+          <Route path="/parent/marks" element={<PortalMarksPage />} />
+          <Route path="/parent/fees" element={<PortalFeesPage />} />
         </Route>
       </Route>
 
       <Route element={<ProtectedRoute allowedRoles={['student']} />}>
         <Route element={<PortalShell />}>
-          <Route path="/student" element={<StudentOverviewPage />} />
+          <Route path="/student" element={<PortalOverviewPage />} />
+          <Route path="/student/attendance" element={<PortalAttendancePage />} />
+          <Route path="/student/marks" element={<PortalMarksPage />} />
+          <Route path="/student/fees" element={<PortalFeesPage />} />
         </Route>
       </Route>
 
