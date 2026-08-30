@@ -1,5 +1,6 @@
 -- EduLedger DEMO seed data.
--- Everything here is fictional and clearly labeled as demo/seed data (see project spec §35).
+-- Everything here is fictional and clearly labeled as demo/seed data (see project spec Section 35):
+-- student numbers are prefixed DEMO-STU-, all emails use the non-routable eduledger.test domain.
 -- All demo user accounts share the password: Demo@12345
 
 INSERT INTO academic_years (name, start_date, end_date, is_current) VALUES
@@ -20,8 +21,8 @@ INSERT INTO courses (name, code, department_id, credit_hours, description) VALUE
   ('English Literature', 'ENG101', 3, 3, 'Reading and composition for Grade 9 students.');
 
 INSERT INTO teachers (first_name, last_name, email, phone, department_id, hire_date, is_active) VALUES
-  ('DEMO', 'Teacher — Amina Yousuf', 'demo.teacher.amina@eduledger.test', '+92-300-0000001', 1, '2022-08-01', TRUE),
-  ('DEMO', 'Teacher — Bilal Farooq', 'demo.teacher.bilal@eduledger.test', '+92-300-0000002', 2, '2021-08-01', TRUE);
+  ('Amina', 'Yousuf', 'demo.teacher.amina@eduledger.test', '+92-300-0000001', 1, '2022-08-01', TRUE),
+  ('Bilal', 'Farooq', 'demo.teacher.bilal@eduledger.test', '+92-300-0000002', 2, '2021-08-01', TRUE);
 
 INSERT INTO classes (course_id, section_id, academic_year_id, teacher_id, room, schedule_day, start_time, end_time) VALUES
   (1, 1, 1, 1, 'Room 101', 'mon', '08:00:00', '08:45:00'),
@@ -29,11 +30,11 @@ INSERT INTO classes (course_id, section_id, academic_year_id, teacher_id, room, 
   (3, 1, 1, 1, 'Room 101', 'wed', '10:00:00', '10:45:00');
 
 INSERT INTO students (student_number, first_name, last_name, date_of_birth, gender, admission_date, section_id, is_active) VALUES
-  ('DEMO-STU-0001', 'DEMO', 'Student — Ayesha Raza', '2011-03-14', 'female', '2025-08-01', 1, TRUE),
-  ('DEMO-STU-0002', 'DEMO', 'Student — Hamza Iqbal', '2011-07-22', 'male', '2025-08-01', 1, TRUE);
+  ('DEMO-STU-0001', 'Ayesha', 'Raza', '2011-03-14', 'female', '2025-08-01', 1, TRUE),
+  ('DEMO-STU-0002', 'Hamza', 'Iqbal', '2011-07-22', 'male', '2025-08-01', 1, TRUE);
 
 INSERT INTO parents (first_name, last_name, email, phone) VALUES
-  ('DEMO', 'Parent — Sana Raza', 'demo.parent.sana@eduledger.test', '+92-300-0000010');
+  ('Sana', 'Raza', 'demo.parent.sana@eduledger.test', '+92-300-0000010');
 
 INSERT INTO parent_student (parent_id, student_id, relationship) VALUES
   (1, 1, 'mother');
@@ -48,7 +49,7 @@ INSERT INTO attendance (class_id, student_id, date, status) VALUES
   (1, 2, '2025-08-11', 'absent');
 
 INSERT INTO exams (class_id, name, exam_date, max_marks) VALUES
-  (1, 'Algebra I — Midterm', '2025-10-15', 100);
+  (1, 'Algebra I - Midterm', '2025-10-15', 100);
 
 INSERT INTO marks (exam_id, student_id, obtained_marks, grade) VALUES
   (1, 1, 88.5, 'A'),
@@ -67,8 +68,8 @@ INSERT INTO payments (fee_id, amount, payment_date, method, reference, recorded_
 
 -- Demo login accounts. Password for all: Demo@12345
 INSERT INTO users (name, email, password_hash, role, student_id, teacher_id, parent_id) VALUES
-  ('DEMO Admin', 'admin@eduledger.test', '$2b$12$oSGIB1S84cl9N/s9V4o2seJ0ZIdd856wpmIccxXNpHMoCEZgG76FO', 'admin', NULL, NULL, NULL),
-  ('DEMO Staff', 'staff@eduledger.test', '$2b$12$oSGIB1S84cl9N/s9V4o2seJ0ZIdd856wpmIccxXNpHMoCEZgG76FO', 'staff', NULL, NULL, NULL),
-  ('DEMO Teacher — Amina Yousuf', 'teacher@eduledger.test', '$2b$12$oSGIB1S84cl9N/s9V4o2seJ0ZIdd856wpmIccxXNpHMoCEZgG76FO', 'teacher', NULL, 1, NULL),
-  ('DEMO Parent — Sana Raza', 'parent@eduledger.test', '$2b$12$oSGIB1S84cl9N/s9V4o2seJ0ZIdd856wpmIccxXNpHMoCEZgG76FO', 'parent', NULL, NULL, 1),
-  ('DEMO Student — Ayesha Raza', 'student@eduledger.test', '$2b$12$oSGIB1S84cl9N/s9V4o2seJ0ZIdd856wpmIccxXNpHMoCEZgG76FO', 'student', 1, NULL, NULL);
+  ('Demo Admin', 'admin@eduledger.test', '$2b$12$oSGIB1S84cl9N/s9V4o2seJ0ZIdd856wpmIccxXNpHMoCEZgG76FO', 'admin', NULL, NULL, NULL),
+  ('Demo Staff', 'staff@eduledger.test', '$2b$12$oSGIB1S84cl9N/s9V4o2seJ0ZIdd856wpmIccxXNpHMoCEZgG76FO', 'staff', NULL, NULL, NULL),
+  ('Amina Yousuf', 'teacher@eduledger.test', '$2b$12$oSGIB1S84cl9N/s9V4o2seJ0ZIdd856wpmIccxXNpHMoCEZgG76FO', 'teacher', NULL, 1, NULL),
+  ('Sana Raza', 'parent@eduledger.test', '$2b$12$oSGIB1S84cl9N/s9V4o2seJ0ZIdd856wpmIccxXNpHMoCEZgG76FO', 'parent', NULL, NULL, 1),
+  ('Ayesha Raza', 'student@eduledger.test', '$2b$12$oSGIB1S84cl9N/s9V4o2seJ0ZIdd856wpmIccxXNpHMoCEZgG76FO', 'student', 1, NULL, NULL);

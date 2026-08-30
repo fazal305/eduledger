@@ -6,8 +6,9 @@ A serious, production-shaped school/academy management system: role-based portal
 admins, staff, teachers, parents, and students, backed by a properly normalized MySQL
 schema — not a demo dashboard with fake charts.
 
-> **Status:** Phase 1 — Foundation. Auth, routing, and the database schema are in place;
-> student/teacher/course management and beyond land in later phases (see Roadmap).
+> **Status:** Phase 2 — Core Academic Data. Auth, the database schema, and full
+> student/teacher/course/class/enrollment management are in place; attendance, exams,
+> fees, and the parent/student portals land in later phases (see Roadmap).
 
 ## Overview
 
@@ -26,10 +27,19 @@ linked to more than one student, and students can have more than one guardian.
   for parents/students
 - Full relational MySQL schema with foreign keys, unique constraints, and check constraints
   (see [`docs/database-schema.md`](docs/database-schema.md))
-- Demo seed data (clearly labeled `[DEMO]` — see [`database/seed/seed.sql`](database/seed/seed.sql))
+- Demo seed data (clearly labeled `DEMO-` / `@eduledger.test` — see [`database/seed/seed.sql`](database/seed/seed.sql))
+- Student management: register, edit, search, filter by section/status, archive/reactivate,
+  a profile view with guardians and enrolled classes
+- Teacher management: add, edit, search, filter by department, archive/reactivate, a profile
+  view listing their assigned classes
+- Course management: add, edit, search, filter by department, archive/reactivate
+- Class management: schedule a course to a section/academic year/teacher with a time slot,
+  edit, archive/reactivate, a roster view per class
+- Enrollment: enroll a student into a class from their profile, drop an enrollment; duplicate
+  active enrollment is rejected both by the database's unique constraint and the API (409)
+- Admin dashboard with live counts (active students/teachers/classes)
 
 **Planned**
-- Student, teacher, course, and class management (Phase 2)
 - Attendance, exams, marks, and printable report cards (Phase 3)
 - Fees, payments, and outstanding-balance reporting (Phase 4)
 - Full parent/student portals (Phase 5)
@@ -109,9 +119,14 @@ cp .env.example server/.env   # then fill in real DB_* and JWT_SECRET values
 ## Database setup
 
 ```bash
-mysql -u <user> -p <database> < database/migrations/001_init.sql
-mysql -u <user> -p <database> < database/seed/seed.sql   # optional demo data
+mysql -u <user> -p -e "CREATE DATABASE eduledger CHARACTER SET utf8mb4;"
+mysql -u <user> -p eduledger < database/migrations/001_init.sql
+mysql -u <user> -p eduledger < database/seed/seed.sql   # optional demo data
 ```
+
+Demo login accounts (after seeding): `admin@eduledger.test`, `staff@eduledger.test`,
+`teacher@eduledger.test`, `parent@eduledger.test`, `student@eduledger.test` — all share the
+password `Demo@12345`.
 
 ## Development
 
