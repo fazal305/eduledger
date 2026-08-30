@@ -2,12 +2,15 @@ import { Link, useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import PageHeader from '../../../components/PageHeader'
 import { fetchClass } from '../../../services/classService'
+import { useAuthStore } from '../../../store/authStore'
 
 const DAY_LABEL = { mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday', thu: 'Thursday', fri: 'Friday', sat: 'Saturday', sun: 'Sunday' }
 
 export default function ClassProfilePage() {
   const { id } = useParams()
   const classId = Number(id)
+  const user = useAuthStore((s) => s.user)
+  const canViewStudents = user?.role === 'admin'
 
   const { data: klass, isPending, isError, error } = useQuery({
     queryKey: ['classes', classId],
@@ -62,9 +65,15 @@ export default function ClassProfilePage() {
                 {klass.roster.map((s) => (
                   <tr key={s.id} className="border-t border-ink-100">
                     <td className="py-2">
-                      <Link to={`/admin/students/${s.id}`} className="font-medium text-ink-800 hover:text-brand-600">
-                        {s.first_name} {s.last_name}
-                      </Link>
+                      {canViewStudents ? (
+                        <Link to={`/admin/students/${s.id}`} className="font-medium text-ink-800 hover:text-brand-600">
+                          {s.first_name} {s.last_name}
+                        </Link>
+                      ) : (
+                        <span className="font-medium text-ink-800">
+                          {s.first_name} {s.last_name}
+                        </span>
+                      )}
                     </td>
                     <td className="py-2 text-ink-500">{s.student_number}</td>
                     <td className="py-2 text-ink-500">{s.enrolled_at}</td>
@@ -77,7 +86,7 @@ export default function ClassProfilePage() {
       </div>
 
       <div className="px-6 pb-6">
-        <Link to="/admin/classes" className="text-sm font-medium text-brand-600 hover:underline">
+        <Link to=".." relative="path" className="text-sm font-medium text-brand-600 hover:underline">
           ← Back to classes
         </Link>
       </div>

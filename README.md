@@ -6,9 +6,9 @@ A serious, production-shaped school/academy management system: role-based portal
 admins, staff, teachers, parents, and students, backed by a properly normalized MySQL
 schema — not a demo dashboard with fake charts.
 
-> **Status:** Phase 2 — Core Academic Data. Auth, the database schema, and full
-> student/teacher/course/class/enrollment management are in place; attendance, exams,
-> fees, and the parent/student portals land in later phases (see Roadmap).
+> **Status:** Phase 3 — Academic Operations. Auth, the database schema, core academic
+> data (students/teachers/courses/classes/enrollments), and attendance/exams/marks/report
+> cards are in place; fees and the parent/student portals land in later phases (see Roadmap).
 
 ## Overview
 
@@ -38,9 +38,16 @@ linked to more than one student, and students can have more than one guardian.
 - Enrollment: enroll a student into a class from their profile, drop an enrollment; duplicate
   active enrollment is rejected both by the database's unique constraint and the API (409)
 - Admin dashboard with live counts (active students/teachers/classes)
+- Attendance: mark present/absent/late/excused per class per day, one record per
+  student/class/day enforced by the database; role-scoped so teachers can only mark
+  attendance for classes they teach (`assertCanManageClass`)
+- Exams: create per class with a name/date/max marks; marks entry validates against
+  the exam's max marks and auto-computes a letter grade server-side
+- Printable report card per student (per academic year): marks by subject, attendance
+  summary, and an overall pass/fail result — uses the browser's native print dialog
+  ("Print / Save as PDF"), no PDF library needed
 
 **Planned**
-- Attendance, exams, marks, and printable report cards (Phase 3)
 - Fees, payments, and outstanding-balance reporting (Phase 4)
 - Full parent/student portals (Phase 5)
 - Accessibility/responsive polish pass (Phase 6)

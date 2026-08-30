@@ -21,3 +21,11 @@ export class BadRequestError extends Error {
     this.expose = true
   }
 }
+
+export class ForbiddenError extends Error {
+  constructor(message = 'Forbidden') {
+    super(message)
+    this.status = 403
+    this.expose = true
+  }
+}

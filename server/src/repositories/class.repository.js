@@ -124,6 +124,16 @@ export async function setClassActive(id, isActive) {
   await pool.query('UPDATE classes SET is_active = ? WHERE id = ?', [isActive, id])
 }
 
+export async function getClassTeacherId(classId) {
+  const [rows] = await pool.query('SELECT teacher_id FROM classes WHERE id = ?', [classId])
+  return rows[0]?.teacher_id ?? null
+}
+
+export async function classActiveExists(classId) {
+  const [rows] = await pool.query('SELECT id FROM classes WHERE id = ?', [classId])
+  return !!rows[0]
+}
+
 export async function getClassRoster(classId) {
   const [rows] = await pool.query(
     `SELECT s.id, s.student_number, s.first_name, s.last_name, e.status, e.enrolled_at

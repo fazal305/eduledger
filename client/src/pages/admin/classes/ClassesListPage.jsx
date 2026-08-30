@@ -9,6 +9,7 @@ import Pagination from '../../../components/ui/Pagination'
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue'
 import { fetchClasses, setClassActive } from '../../../services/classService'
 import { fetchAcademicYears } from '../../../services/referenceService'
+import { useAuthStore } from '../../../store/authStore'
 import ClassFormModal from './ClassFormModal'
 
 const DAY_LABEL = { mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri: 'Fri', sat: 'Sat', sun: 'Sun' }
@@ -21,6 +22,9 @@ export default function ClassesListPage() {
   const [showCreate, setShowCreate] = useState(false)
   const debouncedSearch = useDebouncedValue(search)
   const queryClient = useQueryClient()
+  const user = useAuthStore((s) => s.user)
+  const canManage = user?.role === 'admin'
+  const teacherScope = user?.role === 'teacher' ? user.teacherId : undefined
 
   const { data: academicYears } = useQuery({ queryKey: ['academicYears'], queryFn: fetchAcademicYears })
 
@@ -29,6 +33,7 @@ export default function ClassesListPage() {
     pageSize: 20,
     search: debouncedSearch || undefined,
     academicYearId: academicYearId || undefined,
+    teacherId: teacherScope,
   }
 
   const { data, isPending, isError, error, refetch } = useQuery({
@@ -74,9 +79,11 @@ export default function ClassesListPage() {
             </option>
           ))}
         </select>
-        <div className="ml-auto">
-          <Button onClick={() => setShowCreate(true)}>+ Schedule class</Button>
-        </div>
+        {canManage && (
+          <div className="ml-auto">
+            <Button onClick={() => setShowCreate(true)}>+ Schedule class</Button>
+          </div>
+        )}
       </div>
 
       <div className="mx-6 overflow-x-auto rounded-xl border border-ink-100 bg-white">
@@ -101,7 +108,7 @@ export default function ClassesListPage() {
               {data.data.map((klass) => (
                 <tr key={klass.id} className="border-t border-ink-100 hover:bg-ink-50">
                   <td className="px-4 py-3">
-                    <Link to={`/admin/classes/${klass.id}`} className="font-medium text-ink-900 hover:text-brand-600">
+                    <Link to={`${klass.id}`} className="font-medium text-ink-900 hover:text-brand-600">
                       {klass.course_name}
                     </Link>
                   </td>
@@ -118,18 +125,27 @@ export default function ClassesListPage() {
                     </Badge>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={() => setEditing(klass)}
-                      className="mr-3 text-sm font-medium text-brand-600 hover:underline"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => toggleActive.mutate({ id: klass.id, isActive: !klass.is_active })}
-                      className="text-sm font-medium text-ink-500 hover:underline"
-                    >
-                      {klass.is_active ? 'Archive' : 'Reactivate'}
-                    </button>
+                    {canManage && (
+                      <>
+                        <button
+                          onClick={() => setEditing(klass)}
+                          className="mr-3 text-sm font-medium text-brand-600 hover:underline"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => toggleActive.mutate({ id: klass.id, isActive: !klass.is_active })}
+                          className="text-sm font-medium text-ink-500 hover:underline"
+                        >
+                          {klass.is_active ? 'Archive' : 'Reactivate'}
+                        </button>
+                      </>
+                    )}
+                    {!canManage && (
+                      <Link to={`${klass.id}`} className="text-sm font-medium text-brand-600 hover:underline">
+                        View
+                      </Link>
+                    )}
                   </td>
                 </tr>
               ))}
