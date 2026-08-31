@@ -6,9 +6,9 @@ A serious, production-shaped school/academy management system: role-based portal
 admins, staff, teachers, parents, and students, backed by a properly normalized MySQL
 schema — not a demo dashboard with fake charts.
 
-> **Status:** Phase 5 — Portals. Auth, the database schema, core academic data, academic
-> operations, fees/payments, and the parent/student self-service portals are all in place;
-> UX/accessibility polish and production deployment land in Phases 6–7 (see Roadmap).
+> **Status:** Phase 6 — UX & Polish. All core functionality (Phases 1–5) plus responsive
+> layouts, keyboard/focus support, and route-level code splitting are in place; production
+> deployment lands in Phase 7 (see Roadmap).
 
 ## Overview
 
@@ -59,9 +59,17 @@ linked to more than one student, and students can have more than one guardian.
   A parent with multiple children gets a child selector; every underlying endpoint
   re-verifies ownership server-side (`assertCanViewStudent`), not just the UI — a parent
   or student cannot reach another family's data by guessing an ID in the URL or API
+- Responsive layouts: the admin/staff/teacher sidebar collapses into a hamburger-triggered
+  drawer below `md`; the parent/student portal nav becomes a fixed bottom tab bar on mobile
+  instead of overflowing; every data table scrolls horizontally instead of breaking
+- Keyboard support: modals trap `Tab` focus, auto-focus their first field on open, and
+  close on `Escape`; focus-visible outlines are defined globally, not just on a few elements
+- `prefers-reduced-motion` is respected — all transitions/animations collapse to near-zero
+  duration for users who've asked for reduced motion at the OS level
+- Route-level code splitting via `React.lazy` — each page ships as its own chunk instead of
+  one large bundle, resolving the "chunk larger than 500kB" build warning from earlier phases
 
 **Planned**
-- Accessibility/responsive polish pass (Phase 6)
 - Production deployment to Netlify (frontend + Functions) with a hosted MySQL database (Phase 7)
 
 **Demo / placeholder**
