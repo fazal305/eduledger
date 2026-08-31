@@ -6,13 +6,13 @@ const NAV_BY_ROLE = {
   parent: [
     { to: '/parent', label: 'Overview', end: true },
     { to: '/parent/attendance', label: 'Attendance' },
-    { to: '/parent/marks', label: 'Marks & Report Cards' },
+    { to: '/parent/marks', label: 'Marks' },
     { to: '/parent/fees', label: 'Fees' },
   ],
   student: [
     { to: '/student', label: 'Overview', end: true },
     { to: '/student/attendance', label: 'Attendance' },
-    { to: '/student/marks', label: 'Marks & Report Cards' },
+    { to: '/student/marks', label: 'Marks' },
     { to: '/student/fees', label: 'Fees' },
   ],
 }
@@ -34,7 +34,7 @@ export default function PortalShell() {
       <header className="border-b border-portal-100 bg-white">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
           <span className="text-lg font-semibold tracking-tight text-ink-900">EduLedger</span>
-          <nav className="flex items-center gap-1">
+          <nav className="hidden items-center gap-1 md:flex">
             {items.map((item) => (
               <NavLink
                 key={item.to}
@@ -60,9 +60,30 @@ export default function PortalShell() {
           </button>
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-4 py-8">
+
+      <main className="mx-auto max-w-5xl px-4 py-8 pb-24 md:pb-8">
         <Outlet />
       </main>
+
+      <nav
+        aria-label="Portal navigation"
+        className="fixed inset-x-0 bottom-0 z-30 flex border-t border-portal-100 bg-white md:hidden"
+      >
+        {items.map((item) => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            end={item.end}
+            className={({ isActive }) =>
+              `flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs font-medium ${
+                isActive ? 'text-portal-600' : 'text-ink-500'
+              }`
+            }
+          >
+            {item.label}
+          </NavLink>
+        ))}
+      </nav>
     </div>
   )
 }

@@ -63,8 +63,8 @@ export default function AdminDashboardPage() {
       </div>
 
       <div className="mx-6 mb-6 rounded-xl border border-dashed border-ink-200 p-5 text-sm text-ink-500">
-        Today's attendance and upcoming exam metrics land alongside the parent/student
-        portals in Phase 5.
+        Today's attendance and upcoming exam metrics are a future enhancement — see
+        Attendance and Exams & Marks in the sidebar for the underlying data today.
       </div>
     </div>
   )
