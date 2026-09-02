@@ -6,9 +6,8 @@ A serious, production-shaped school/academy management system: role-based portal
 admins, staff, teachers, parents, and students, backed by a properly normalized MySQL
 schema — not a demo dashboard with fake charts.
 
-> **Status:** Phase 6 — UX & Polish. All core functionality (Phases 1–5) plus responsive
-> layouts, keyboard/focus support, and route-level code splitting are in place; production
-> deployment lands in Phase 7 (see Roadmap).
+> **Status:** Live. All 7 phases are complete — full feature set, security review, and
+> production deployment. **[eduledger-ebon.vercel.app](https://eduledger-ebon.vercel.app)**
 
 ## Overview
 
@@ -70,7 +69,7 @@ linked to more than one student, and students can have more than one guardian.
   one large bundle, resolving the "chunk larger than 500kB" build warning from earlier phases
 
 **Planned**
-- Production deployment to Netlify (frontend + Functions) with a hosted MySQL database (Phase 7)
+- Nothing — see the Deployment section below for live-deploy status
 
 **Demo / placeholder**
 - All seed data (students, teachers, parents, fees) is fictional and prefixed `DEMO`/`[DEMO]`
@@ -81,18 +80,19 @@ linked to more than one student, and students can have more than one guardian.
 See [`docs/architecture.md`](docs/architecture.md) for the full breakdown. In short:
 
 ```
-client/    React + Vite SPA → deployed to Netlify as static assets
-server/    Express API      → deployed as a Netlify Function (serverless-http)
-database/  MySQL schema + seed → hosted on a managed MySQL provider
+client/    React + Vite SPA → deployed to Vercel as static assets
+server/    Express API      → deployed as a Vercel Function (api/index.mjs)
+database/  MySQL schema + seed → hosted on Aiven, connected over verified TLS
 ```
 
 ## Tech stack
 
 - **Frontend:** React, Vite, React Router, Tailwind CSS, TanStack Query, Zustand,
   React Hook Form + Zod, Recharts
-- **Backend:** Node.js, Express, mysql2, JWT (jsonwebtoken), bcrypt
-- **Database:** MySQL 8
-- **Deployment:** Netlify (frontend + serverless functions), managed MySQL host
+- **Backend:** Node.js, Express, mysql2, JWT (jsonwebtoken), bcrypt, helmet,
+  express-rate-limit
+- **Database:** MySQL 8 (hosted on Aiven)
+- **Deployment:** Vercel (frontend + serverless function)
 
 ## Database architecture
 
@@ -116,13 +116,13 @@ Authorization is enforced at the API layer, not just by hiding UI — see `serve
 ```
 eduledger/
 ├── client/            React + Vite frontend
-├── server/            Express API
-├── netlify/functions/ Serverless wrapper around the Express app
+├── server/            Express API (also runs standalone for local dev)
+├── api/index.mjs      Vercel Function entry point — exports the Express app directly
 ├── database/
 │   ├── migrations/    Schema (001_init.sql)
 │   └── seed/          Demo seed data
 ├── docs/              Architecture & schema documentation
-├── netlify.toml
+├── vercel.json
 └── .env.example
 ```
 
@@ -169,10 +169,14 @@ npm run build:client
 
 ## Deployment
 
-Frontend + API deploy together to Netlify (see `netlify.toml`); the database is hosted
-separately on a managed MySQL provider. Full deployment steps land in Phase 7.
+Frontend + API deploy together to Vercel (see `vercel.json`); the database is hosted
+separately on Aiven MySQL, connected over TLS with the connection verified against
+Aiven's CA certificate (not just encrypted-but-unverified).
 
-**Live demo URL:** _not yet deployed — added here once Phase 7 is complete._
+Demo login accounts are the same ones listed under Database Setup above — the live
+deployment runs against the same seeded data.
+
+**Live demo URL:** https://eduledger-ebon.vercel.app
 
 ## Screenshots
 

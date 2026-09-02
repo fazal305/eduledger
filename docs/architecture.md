@@ -12,17 +12,28 @@ database/  MySQL schema (migrations) and demo seed data
 
 ## Deployment shape
 
-Netlify cannot host a persistent Node process or a database, so:
+Vercel cannot host a persistent Node process or a database, so:
 
-- `client/` builds to static assets served by Netlify.
-- `server/src/app.js` (a plain Express app, no `listen()` call) is wrapped by
-  `netlify/functions/api.js` via `serverless-http` and deployed as a Netlify Function.
-- The MySQL database is hosted on a managed provider (Aiven MySQL free tier, or
-  Railway — decided during Phase 7) reachable from Netlify's serverless runtime over TLS.
-- `netlify.toml` redirects `/api/*` to the function and serves the SPA for all other routes.
+- `client/` builds to static assets, served by Vercel's CDN.
+- `server/src/app.js` (a plain Express app, no `listen()` call) is exported directly from
+  `api/index.mjs` as a Vercel Function — Express apps are callable as `(req, res)`, which is
+  exactly the signature Vercel's Node runtime expects, so no adapter library is needed.
+- `vercel.json` rewrites `/api/*` to that function and falls back to `/index.html` for every
+  other path (client-side routing). The `/api/*` rewrite is declared *before* the catch-all
+  SPA rewrite — Vercel evaluates rewrites in array order, so ordering here is load-bearing:
+  swapping them would swallow every API call into the SPA fallback.
+- The MySQL database is hosted on Aiven, reached over TLS with the connection verified
+  against Aiven's project CA certificate (`server/src/certs/aiven-ca.pem`, committed — it's
+  a public certificate, not a secret) rather than disabling certificate validation.
 
 Locally, `server/src/server.js` runs the same `app.js` as a normal long-lived process on
 port 4000, and Vite proxies `/api` to it — so the API code path is identical in dev and prod.
+
+A note on `vercel.json`'s `installCommand`: Vercel's build environment sets
+`NODE_ENV=production`, which makes plain `npm install` skip `devDependencies` — that
+silently drops `vite` itself (a client devDependency) and breaks the build with
+`vite: command not found`. The install command passes `--include=dev` for the client
+install specifically to work around this.
 
 ## Auth
 
