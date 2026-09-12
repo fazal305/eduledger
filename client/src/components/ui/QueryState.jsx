@@ -1,4 +1,8 @@
+import { useSlowRequest } from '../../hooks/useSlowRequest'
+
 export function TableLoading({ columns }) {
+  const isSlow = useSlowRequest()
+
   return (
     <tbody>
       {Array.from({ length: 5 }).map((_, row) => (
@@ -10,6 +14,13 @@ export function TableLoading({ columns }) {
           ))}
         </tr>
       ))}
+      {isSlow && (
+        <tr>
+          <td colSpan={columns} className="px-4 py-2 text-center text-xs text-ink-400">
+            Still working, this is taking longer than usual…
+          </td>
+        </tr>
+      )}
     </tbody>
   )
 }

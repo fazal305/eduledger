@@ -8,6 +8,7 @@ import FormField, { inputClass } from '../../../components/ui/FormField'
 import { studentFormSchema } from '../../../schemas/student'
 import { createStudent, updateStudent } from '../../../services/studentService'
 import { fetchSections } from '../../../services/referenceService'
+import { showToast } from '../../../store/toastStore'
 
 export default function StudentFormModal({ student, onClose, onSuccess }) {
   const isEdit = !!student
@@ -37,7 +38,10 @@ export default function StudentFormModal({ student, onClose, onSuccess }) {
       const payload = { ...values, sectionId: values.sectionId === '' ? null : values.sectionId }
       return isEdit ? updateStudent(student.id, payload) : createStudent(payload)
     },
-    onSuccess,
+    onSuccess: (...args) => {
+      showToast(isEdit ? 'Student updated.' : 'Student registered.')
+      onSuccess?.(...args)
+    },
     onError: (err) => setServerError(err.response?.data?.message ?? 'Something went wrong. Try again.'),
   })
 

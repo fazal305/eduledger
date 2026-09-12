@@ -10,6 +10,7 @@ import { createFee } from '../../../services/feeService'
 import { fetchStudents } from '../../../services/studentService'
 import { fetchFeeTypes } from '../../../services/referenceService'
 import { fetchAcademicYears } from '../../../services/referenceService'
+import { showToast } from '../../../store/toastStore'
 
 const feeFormSchema = z.object({
   studentId: z.coerce.number({ message: 'Select a student' }).int().positive('Select a student'),
@@ -34,7 +35,10 @@ export default function FeeFormModal({ onClose, onSuccess }) {
 
   const mutation = useMutation({
     mutationFn: (values) => createFee(values),
-    onSuccess,
+    onSuccess: (...args) => {
+      showToast('Fee added.')
+      onSuccess?.(...args)
+    },
     onError: (err) => setServerError(err.response?.data?.message ?? 'Something went wrong. Try again.'),
   })
 

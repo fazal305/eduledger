@@ -7,6 +7,7 @@ import Modal from '../../components/ui/Modal'
 import Button from '../../components/ui/Button'
 import FormField, { inputClass } from '../../components/ui/FormField'
 import { createExam, updateExam } from '../../services/examService'
+import { showToast } from '../../store/toastStore'
 
 const examFormSchema = z.object({
   name: z.string().trim().min(1, 'Exam name is required').max(150),
@@ -30,7 +31,10 @@ export default function ExamFormModal({ classId, exam, onClose, onSuccess }) {
       const payload = { ...values, classId }
       return isEdit ? updateExam(exam.id, payload) : createExam(payload)
     },
-    onSuccess,
+    onSuccess: (...args) => {
+      showToast(isEdit ? 'Exam updated.' : 'Exam created.')
+      onSuccess?.(...args)
+    },
     onError: (err) => setServerError(err.response?.data?.message ?? 'Something went wrong. Try again.'),
   })
 

@@ -7,6 +7,7 @@ import Modal from '../../../components/ui/Modal'
 import Button from '../../../components/ui/Button'
 import FormField, { inputClass } from '../../../components/ui/FormField'
 import { recordPayment } from '../../../services/feeService'
+import { showToast } from '../../../store/toastStore'
 
 function todayIso() {
   return new Date().toISOString().slice(0, 10)
@@ -33,7 +34,10 @@ export default function PaymentFormModal({ fee, onClose, onSuccess }) {
 
   const mutation = useMutation({
     mutationFn: (values) => recordPayment(fee.id, values),
-    onSuccess,
+    onSuccess: (...args) => {
+      showToast('Payment recorded.')
+      onSuccess?.(...args)
+    },
     onError: (err) => setServerError(err.response?.data?.message ?? 'Could not record this payment.'),
   })
 

@@ -8,6 +8,7 @@ import FormField, { inputClass } from '../../../components/ui/FormField'
 import { teacherFormSchema } from '../../../schemas/teacher'
 import { createTeacher, updateTeacher } from '../../../services/teacherService'
 import { fetchDepartments } from '../../../services/referenceService'
+import { showToast } from '../../../store/toastStore'
 
 export default function TeacherFormModal({ teacher, onClose, onSuccess }) {
   const isEdit = !!teacher
@@ -41,7 +42,10 @@ export default function TeacherFormModal({ teacher, onClose, onSuccess }) {
       }
       return isEdit ? updateTeacher(teacher.id, payload) : createTeacher(payload)
     },
-    onSuccess,
+    onSuccess: (...args) => {
+      showToast(isEdit ? 'Teacher updated.' : 'Teacher added.')
+      onSuccess?.(...args)
+    },
     onError: (err) => setServerError(err.response?.data?.message ?? 'Something went wrong. Try again.'),
   })
 

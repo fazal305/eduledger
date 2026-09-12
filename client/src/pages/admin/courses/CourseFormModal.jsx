@@ -6,6 +6,7 @@ import Modal from '../../../components/ui/Modal'
 import Button from '../../../components/ui/Button'
 import FormField, { inputClass } from '../../../components/ui/FormField'
 import { courseFormSchema } from '../../../schemas/course'
+import { showToast } from '../../../store/toastStore'
 import { createCourse, updateCourse } from '../../../services/courseService'
 import { fetchDepartments } from '../../../services/referenceService'
 
@@ -33,7 +34,10 @@ export default function CourseFormModal({ course, onClose, onSuccess }) {
 
   const mutation = useMutation({
     mutationFn: (values) => (isEdit ? updateCourse(course.id, values) : createCourse(values)),
-    onSuccess,
+    onSuccess: (...args) => {
+      showToast(isEdit ? 'Course updated.' : 'Course added.')
+      onSuccess?.(...args)
+    },
     onError: (err) => setServerError(err.response?.data?.message ?? 'Something went wrong. Try again.'),
   })
 

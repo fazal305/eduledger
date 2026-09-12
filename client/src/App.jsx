@@ -8,6 +8,8 @@ import PortalShell from './layouts/PortalShell'
 import LoginPage from './pages/auth/LoginPage'
 import NotFoundPage from './pages/NotFoundPage'
 import UnauthorizedPage from './pages/UnauthorizedPage'
+import OfflineBanner from './components/ui/OfflineBanner'
+import ToastViewport from './components/ui/Toast'
 
 const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage'))
 const StaffDashboardPage = lazy(() => import('./pages/staff/StaffDashboardPage'))
@@ -52,6 +54,8 @@ export default function App() {
 
   return (
     <Suspense fallback={<RouteFallback />}>
+      <OfflineBanner />
+      <ToastViewport />
       <Routes>
         <Route path="/" element={<HomeRedirect />} />
         <Route path="/login" element={<LoginPage />} />

@@ -8,6 +8,7 @@ import FormField, { inputClass } from '../../../components/ui/FormField'
 import { classFormSchema } from '../../../schemas/class'
 import { createClass, updateClass } from '../../../services/classService'
 import { fetchAcademicYears, fetchSections } from '../../../services/referenceService'
+import { showToast } from '../../../store/toastStore'
 import { fetchCourses } from '../../../services/courseService'
 import { fetchTeachers } from '../../../services/teacherService'
 
@@ -62,7 +63,10 @@ export default function ClassFormModal({ klass, onClose, onSuccess }) {
       }
       return isEdit ? updateClass(klass.id, payload) : createClass(payload)
     },
-    onSuccess,
+    onSuccess: (...args) => {
+      showToast(isEdit ? 'Class updated.' : 'Class scheduled.')
+      onSuccess?.(...args)
+    },
     onError: (err) => setServerError(err.response?.data?.message ?? 'Something went wrong. Try again.'),
   })
 
