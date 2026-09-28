@@ -1,103 +1,138 @@
-import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import PageHeader from '../../../components/PageHeader'
-import Button from '../../../components/ui/Button'
-import Badge from '../../../components/ui/Badge'
-import ConfirmDialog from '../../../components/ui/ConfirmDialog'
-import { fetchStudent, setStudentActive } from '../../../services/studentService'
-import { fetchEnrollments, dropEnrollment } from '../../../services/enrollmentService'
-import { fetchFees } from '../../../services/feeService'
-import StudentFormModal from './StudentFormModal'
-import EnrollStudentModal from './EnrollStudentModal'
+import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import PageHeader from "../../../components/PageHeader";
+import Button from "../../../components/ui/Button";
+import Badge from "../../../components/ui/Badge";
+import ConfirmDialog from "../../../components/ui/ConfirmDialog";
+import {
+  fetchStudent,
+  setStudentActive,
+} from "../../../services/studentService";
+import {
+  fetchEnrollments,
+  dropEnrollment,
+} from "../../../services/enrollmentService";
+import { fetchFees } from "../../../services/feeService";
+import StudentFormModal from "./StudentFormModal";
+import EnrollStudentModal from "./EnrollStudentModal";
 
-const FEE_STATUS_TONE = { paid: 'success', partially_paid: 'warning', pending: 'neutral', overdue: 'danger' }
-const FEE_STATUS_LABEL = { paid: 'Paid', partially_paid: 'Partially paid', pending: 'Pending', overdue: 'Overdue' }
+const FEE_STATUS_TONE = {
+  paid: "success",
+  partially_paid: "warning",
+  pending: "neutral",
+  overdue: "danger",
+};
+const FEE_STATUS_LABEL = {
+  paid: "Paid",
+  partially_paid: "Partially paid",
+  pending: "Pending",
+  overdue: "Overdue",
+};
 
 function money(value) {
-  return Number(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return Number(value).toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 }
 
 export default function StudentProfilePage() {
-  const { id } = useParams()
-  const studentId = Number(id)
-  const queryClient = useQueryClient()
-  const [showEdit, setShowEdit] = useState(false)
-  const [showEnroll, setShowEnroll] = useState(false)
-  const [confirmArchive, setConfirmArchive] = useState(false)
-  const [dropTarget, setDropTarget] = useState(null)
+  const { id } = useParams();
+  const studentId = Number(id);
+  const queryClient = useQueryClient();
+  const [showEdit, setShowEdit] = useState(false);
+  const [showEnroll, setShowEnroll] = useState(false);
+  const [confirmArchive, setConfirmArchive] = useState(false);
+  const [dropTarget, setDropTarget] = useState(null);
 
-  const { data: student, isPending, isError, error } = useQuery({
-    queryKey: ['students', studentId],
+  const {
+    data: student,
+    isPending,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["students", studentId],
     queryFn: () => fetchStudent(studentId),
-  })
+  });
 
   const { data: enrollments } = useQuery({
-    queryKey: ['enrollments', { studentId }],
-    queryFn: () => fetchEnrollments({ studentId, status: 'active' }),
+    queryKey: ["enrollments", { studentId }],
+    queryFn: () => fetchEnrollments({ studentId, status: "active" }),
     enabled: !!studentId,
-  })
+  });
 
   const { data: fees } = useQuery({
-    queryKey: ['fees', { studentId }],
+    queryKey: ["fees", { studentId }],
     queryFn: () => fetchFees({ studentId, pageSize: 10 }),
     enabled: !!studentId,
-  })
+  });
 
   const archiveMutation = useMutation({
     mutationFn: (isActive) => setStudentActive(studentId, isActive),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['students'] })
-      setConfirmArchive(false)
+      queryClient.invalidateQueries({ queryKey: ["students"] });
+      setConfirmArchive(false);
     },
-  })
+  });
 
   const dropMutation = useMutation({
     mutationFn: (enrollmentId) => dropEnrollment(enrollmentId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['enrollments', { studentId }] })
-      setDropTarget(null)
+      queryClient.invalidateQueries({
+        queryKey: ["enrollments", { studentId }],
+      });
+      setDropTarget(null);
     },
-  })
+  });
 
-  if (isPending) return <div className="p-6 text-sm text-ink-500">Loading student…</div>
+  if (isPending)
+    return <div className="p-6 text-sm text-ink-500">Loading student…</div>;
   if (isError) {
     return (
       <div className="p-6 text-sm text-danger-600">
-        {error?.response?.data?.message ?? 'Could not load this student.'}
+        {error?.response?.data?.message ?? "Could not load this student."}
       </div>
-    )
+    );
   }
 
   return (
     <div>
       <PageHeader
         title={`${student.first_name} ${student.last_name}`}
-        description={`${student.student_number} · ${student.section_name ?? 'Unassigned section'}`}
+        description={`${student.student_number} · ${student.section_name ?? "Unassigned section"}`}
       />
 
       <div className="grid gap-6 p-6 lg:grid-cols-3">
         <section className="rounded-xl border border-ink-100 bg-white p-5 lg:col-span-1">
           <div className="mb-3 flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-ink-900">Basic information</h3>
-            <Badge tone={student.is_active ? 'success' : 'neutral'}>
-              {student.is_active ? 'Active' : 'Archived'}
+            <h3 className="text-sm font-semibold text-ink-900">
+              Basic information
+            </h3>
+            <Badge tone={student.is_active ? "success" : "neutral"}>
+              {student.is_active ? "Active" : "Archived"}
             </Badge>
           </div>
           <dl className="space-y-2 text-sm">
             <Row label="Date of birth" value={student.date_of_birth} />
             <Row label="Gender" value={student.gender} />
             <Row label="Admission date" value={student.admission_date} />
-            <Row label="Section" value={student.section_name ?? '—'} />
+            <Row label="Section" value={student.section_name ?? "—"} />
           </dl>
           <div className="mt-4 flex gap-2">
             <Button variant="secondary" onClick={() => setShowEdit(true)}>
               Edit
             </Button>
-            <Button variant={student.is_active ? 'danger' : 'primary'} onClick={() => setConfirmArchive(true)}>
-              {student.is_active ? 'Archive' : 'Reactivate'}
+            <Button
+              variant={student.is_active ? "danger" : "primary"}
+              onClick={() => setConfirmArchive(true)}
+            >
+              {student.is_active ? "Archive" : "Reactivate"}
             </Button>
-            <Link to="report-card" className="ml-auto self-center text-sm font-medium text-brand-600 hover:underline">
+            <Link
+              to="report-card"
+              className="ml-auto self-center text-sm font-medium text-brand-600 hover:underline"
+            >
               Report card →
             </Link>
           </div>
@@ -112,8 +147,10 @@ export default function StudentProfilePage() {
               {student.guardians.map((g) => (
                 <li key={g.id}>
                   <p className="font-medium text-ink-800">
-                    {g.first_name} {g.last_name}{' '}
-                    <span className="font-normal text-ink-400">({g.relationship})</span>
+                    {g.first_name} {g.last_name}{" "}
+                    <span className="font-normal text-ink-400">
+                      ({g.relationship})
+                    </span>
                   </p>
                   <p className="text-ink-500">{g.email}</p>
                 </li>
@@ -124,13 +161,17 @@ export default function StudentProfilePage() {
 
         <section className="rounded-xl border border-ink-100 bg-white p-5 lg:col-span-1">
           <div className="mb-3 flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-ink-900">Enrolled classes</h3>
+            <h3 className="text-sm font-semibold text-ink-900">
+              Enrolled classes
+            </h3>
             <Button variant="secondary" onClick={() => setShowEnroll(true)}>
               + Enroll
             </Button>
           </div>
           {!enrollments || enrollments.data.length === 0 ? (
-            <p className="text-sm text-ink-400">Not enrolled in any class yet.</p>
+            <p className="text-sm text-ink-400">
+              Not enrolled in any class yet.
+            </p>
           ) : (
             <ul className="space-y-3 text-sm">
               {enrollments.data.map((e) => (
@@ -162,12 +203,16 @@ export default function StudentProfilePage() {
               {fees.data.map((f) => (
                 <li key={f.id} className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-ink-800">{f.fee_type_name}</p>
+                    <p className="font-medium text-ink-800">
+                      {f.fee_type_name}
+                    </p>
                     <p className="text-ink-500">
                       {money(f.remaining_amount)} remaining of {money(f.amount)}
                     </p>
                   </div>
-                  <Badge tone={FEE_STATUS_TONE[f.status]}>{FEE_STATUS_LABEL[f.status]}</Badge>
+                  <Badge tone={FEE_STATUS_TONE[f.status]}>
+                    {FEE_STATUS_LABEL[f.status]}
+                  </Badge>
                 </li>
               ))}
             </ul>
@@ -176,7 +221,11 @@ export default function StudentProfilePage() {
       </div>
 
       <div className="px-6 pb-6">
-        <Link to=".." relative="path" className="text-sm font-medium text-brand-600 hover:underline">
+        <Link
+          to=".."
+          relative="path"
+          className="text-sm font-medium text-brand-600 hover:underline"
+        >
           ← Back to students
         </Link>
       </div>
@@ -186,8 +235,10 @@ export default function StudentProfilePage() {
           student={student}
           onClose={() => setShowEdit(false)}
           onSuccess={() => {
-            setShowEdit(false)
-            queryClient.invalidateQueries({ queryKey: ['students', studentId] })
+            setShowEdit(false);
+            queryClient.invalidateQueries({
+              queryKey: ["students", studentId],
+            });
           }}
         />
       )}
@@ -197,21 +248,23 @@ export default function StudentProfilePage() {
           studentId={studentId}
           onClose={() => setShowEnroll(false)}
           onSuccess={() => {
-            setShowEnroll(false)
-            queryClient.invalidateQueries({ queryKey: ['enrollments', { studentId }] })
+            setShowEnroll(false);
+            queryClient.invalidateQueries({
+              queryKey: ["enrollments", { studentId }],
+            });
           }}
         />
       )}
 
       {confirmArchive && (
         <ConfirmDialog
-          title={student.is_active ? 'Archive student?' : 'Reactivate student?'}
+          title={student.is_active ? "Archive student?" : "Reactivate student?"}
           message={
             student.is_active
-              ? 'The student will be marked inactive. Their historical records are kept.'
-              : 'The student will be marked active again.'
+              ? "The student will be marked inactive. Their historical records are kept."
+              : "The student will be marked active again."
           }
-          confirmLabel={student.is_active ? 'Archive' : 'Reactivate'}
+          confirmLabel={student.is_active ? "Archive" : "Reactivate"}
           isLoading={archiveMutation.isPending}
           onCancel={() => setConfirmArchive(false)}
           onConfirm={() => archiveMutation.mutate(!student.is_active)}
@@ -229,7 +282,7 @@ export default function StudentProfilePage() {
         />
       )}
     </div>
-  )
+  );
 }
 
 function Row({ label, value }) {
@@ -238,5 +291,5 @@ function Row({ label, value }) {
       <dt className="text-ink-500">{label}</dt>
       <dd className="font-medium text-ink-800">{value}</dd>
     </div>
-  )
+  );
 }

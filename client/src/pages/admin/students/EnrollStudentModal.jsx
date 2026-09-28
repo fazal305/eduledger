@@ -1,43 +1,55 @@
-import { useForm } from 'react-hook-form'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
-import Modal from '../../../components/ui/Modal'
-import Button from '../../../components/ui/Button'
-import FormField, { inputClass } from '../../../components/ui/FormField'
-import { fetchClasses } from '../../../services/classService'
-import { enrollStudent } from '../../../services/enrollmentService'
+import { useForm } from "react-hook-form";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import Modal from "../../../components/ui/Modal";
+import Button from "../../../components/ui/Button";
+import FormField, { inputClass } from "../../../components/ui/FormField";
+import { fetchClasses } from "../../../services/classService";
+import { enrollStudent } from "../../../services/enrollmentService";
 
 export default function EnrollStudentModal({ studentId, onClose, onSuccess }) {
-  const [serverError, setServerError] = useState('')
+  const [serverError, setServerError] = useState("");
   const { data: classesResult } = useQuery({
-    queryKey: ['classes', 'for-enrollment'],
-    queryFn: () => fetchClasses({ isActive: 'true', pageSize: 100 }),
-  })
+    queryKey: ["classes", "for-enrollment"],
+    queryFn: () => fetchClasses({ isActive: "true", pageSize: 100 }),
+  });
 
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
-    defaultValues: { classId: '' },
-  })
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    defaultValues: { classId: "" },
+  });
 
   const mutation = useMutation({
-    mutationFn: (values) => enrollStudent({ studentId, classId: Number(values.classId) }),
+    mutationFn: (values) =>
+      enrollStudent({ studentId, classId: Number(values.classId) }),
     onSuccess,
-    onError: (err) => setServerError(err.response?.data?.message ?? 'Could not enroll student.'),
-  })
+    onError: (err) =>
+      setServerError(
+        err.response?.data?.message ?? "Could not enroll student.",
+      ),
+  });
 
   return (
     <Modal title="Enroll in a class" onClose={onClose} width="max-w-md">
       <form
         onSubmit={handleSubmit((values) => {
-          if (!values.classId) return
-          mutation.mutate(values)
+          if (!values.classId) return;
+          mutation.mutate(values);
         })}
         className="space-y-4"
         noValidate
       >
-        <FormField label="Class" htmlFor="classId" error={errors.classId?.message}>
+        <FormField
+          label="Class"
+          htmlFor="classId"
+          error={errors.classId?.message}
+        >
           <select
             id="classId"
-            {...register('classId', { required: 'Select a class' })}
+            {...register("classId", { required: "Select a class" })}
             className={inputClass}
           >
             <option value="">Select a class…</option>
@@ -50,7 +62,10 @@ export default function EnrollStudentModal({ studentId, onClose, onSuccess }) {
         </FormField>
 
         {serverError && (
-          <p role="alert" className="rounded-lg bg-danger-100 px-3 py-2 text-sm text-danger-600">
+          <p
+            role="alert"
+            className="rounded-lg bg-danger-100 px-3 py-2 text-sm text-danger-600"
+          >
             {serverError}
           </p>
         )}
@@ -65,5 +80,5 @@ export default function EnrollStudentModal({ studentId, onClose, onSuccess }) {
         </div>
       </form>
     </Modal>
-  )
+  );
 }

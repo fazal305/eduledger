@@ -1,7 +1,7 @@
-import Button from './Button'
+import Button from "./Button";
 
 export default function Pagination({ meta, onPageChange }) {
-  if (!meta || meta.totalPages <= 1) return null
+  if (!meta || meta.totalPages <= 1) return null;
 
   return (
     <div className="flex items-center justify-between border-t border-ink-100 px-4 py-3">
@@ -25,5 +25,5 @@ export default function Pagination({ meta, onPageChange }) {
         </Button>
       </div>
     </div>
-  )
+  );
 }

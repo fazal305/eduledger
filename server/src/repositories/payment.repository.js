@@ -1,4 +1,4 @@
-import { pool } from '../config/db.js'
+import { pool } from "../config/db.js";
 
 export async function listPaymentsForFee(feeId) {
   const [rows] = await pool.query(
@@ -9,15 +9,22 @@ export async function listPaymentsForFee(feeId) {
      WHERE p.fee_id = ?
      ORDER BY p.payment_date DESC, p.id DESC`,
     [feeId],
-  )
-  return rows
+  );
+  return rows;
 }
 
 export async function insertPayment(data, recordedBy) {
   const [result] = await pool.query(
     `INSERT INTO payments (fee_id, amount, payment_date, method, reference, recorded_by)
      VALUES (?, ?, ?, ?, ?, ?)`,
-    [data.feeId, data.amount, data.paymentDate, data.method, data.reference ?? null, recordedBy],
-  )
-  return result.insertId
+    [
+      data.feeId,
+      data.amount,
+      data.paymentDate,
+      data.method,
+      data.reference ?? null,
+      recordedBy,
+    ],
+  );
+  return result.insertId;
 }

@@ -1,34 +1,39 @@
-import { useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import PageHeader from '../../components/PageHeader'
-import Button from '../../components/ui/Button'
-import { useMyClasses } from '../../hooks/useMyClasses'
-import { fetchExams } from '../../services/examService'
-import ExamFormModal from './ExamFormModal'
+import { useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import PageHeader from "../../components/PageHeader";
+import Button from "../../components/ui/Button";
+import { useMyClasses } from "../../hooks/useMyClasses";
+import { fetchExams } from "../../services/examService";
+import ExamFormModal from "./ExamFormModal";
 
 export default function ExamsListPage() {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const classId = searchParams.get('classId') ?? ''
-  const [showCreate, setShowCreate] = useState(false)
-  const queryClient = useQueryClient()
+  const [searchParams, setSearchParams] = useSearchParams();
+  const classId = searchParams.get("classId") ?? "";
+  const [showCreate, setShowCreate] = useState(false);
+  const queryClient = useQueryClient();
 
-  const { data: classes } = useMyClasses()
+  const { data: classes } = useMyClasses();
 
   const { data: exams, isPending } = useQuery({
-    queryKey: ['exams', classId],
+    queryKey: ["exams", classId],
     queryFn: () => fetchExams(classId),
     enabled: !!classId,
-  })
+  });
 
   return (
     <div>
-      <PageHeader title="Exams & Marks" description="Create exams and enter marks per class" />
+      <PageHeader
+        title="Exams & Marks"
+        description="Create exams and enter marks per class"
+      />
 
       <div className="flex flex-wrap items-center gap-3 px-6 py-4">
         <select
           value={classId}
-          onChange={(e) => setSearchParams(e.target.value ? { classId: e.target.value } : {})}
+          onChange={(e) =>
+            setSearchParams(e.target.value ? { classId: e.target.value } : {})
+          }
           className="rounded-lg border border-ink-200 px-3 py-2 text-sm"
           aria-label="Select class"
         >
@@ -46,8 +51,14 @@ export default function ExamsListPage() {
         )}
       </div>
 
-      {!classId && <p className="px-6 text-sm text-ink-400">Select a class to see its exams.</p>}
-      {classId && isPending && <p className="px-6 text-sm text-ink-500">Loading exams…</p>}
+      {!classId && (
+        <p className="px-6 text-sm text-ink-400">
+          Select a class to see its exams.
+        </p>
+      )}
+      {classId && isPending && (
+        <p className="px-6 text-sm text-ink-500">Loading exams…</p>
+      )}
 
       {classId && exams && (
         <div className="mx-6 overflow-x-auto rounded-xl border border-ink-100 bg-white">
@@ -63,14 +74,22 @@ export default function ExamsListPage() {
             <tbody>
               {exams.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-4 py-10 text-center text-sm text-ink-400">
+                  <td
+                    colSpan={4}
+                    className="px-4 py-10 text-center text-sm text-ink-400"
+                  >
                     No exams yet for this class.
                   </td>
                 </tr>
               )}
               {exams.map((exam) => (
-                <tr key={exam.id} className="border-t border-ink-100 hover:bg-ink-50">
-                  <td className="px-4 py-3 font-medium text-ink-900">{exam.name}</td>
+                <tr
+                  key={exam.id}
+                  className="border-t border-ink-100 hover:bg-ink-50"
+                >
+                  <td className="px-4 py-3 font-medium text-ink-900">
+                    {exam.name}
+                  </td>
                   <td className="px-4 py-3 text-ink-500">{exam.exam_date}</td>
                   <td className="px-4 py-3 text-ink-500">{exam.max_marks}</td>
                   <td className="px-4 py-3 text-right">
@@ -93,11 +112,11 @@ export default function ExamsListPage() {
           classId={Number(classId)}
           onClose={() => setShowCreate(false)}
           onSuccess={() => {
-            setShowCreate(false)
-            queryClient.invalidateQueries({ queryKey: ['exams', classId] })
+            setShowCreate(false);
+            queryClient.invalidateQueries({ queryKey: ["exams", classId] });
           }}
         />
       )}
     </div>
-  )
+  );
 }

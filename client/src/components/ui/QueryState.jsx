@@ -1,7 +1,7 @@
-import { useSlowRequest } from '../../hooks/useSlowRequest'
+import { useSlowRequest } from "../../hooks/useSlowRequest";
 
 export function TableLoading({ columns }) {
-  const isSlow = useSlowRequest()
+  const isSlow = useSlowRequest();
 
   return (
     <tbody>
@@ -16,33 +16,42 @@ export function TableLoading({ columns }) {
       ))}
       {isSlow && (
         <tr>
-          <td colSpan={columns} className="px-4 py-2 text-center text-xs text-ink-400">
+          <td
+            colSpan={columns}
+            className="px-4 py-2 text-center text-xs text-ink-400"
+          >
             Still working, this is taking longer than usual…
           </td>
         </tr>
       )}
     </tbody>
-  )
+  );
 }
 
-export function TableEmpty({ columns, message = 'No records found.' }) {
+export function TableEmpty({ columns, message = "No records found." }) {
   return (
     <tbody>
       <tr>
-        <td colSpan={columns} className="px-4 py-10 text-center text-sm text-ink-400">
+        <td
+          colSpan={columns}
+          className="px-4 py-10 text-center text-sm text-ink-400"
+        >
           {message}
         </td>
       </tr>
     </tbody>
-  )
+  );
 }
 
 export function TableError({ columns, message, onRetry }) {
   return (
     <tbody>
       <tr>
-        <td colSpan={columns} className="px-4 py-10 text-center text-sm text-danger-600">
-          {message ?? 'Something went wrong loading this data.'}
+        <td
+          colSpan={columns}
+          className="px-4 py-10 text-center text-sm text-danger-600"
+        >
+          {message ?? "Something went wrong loading this data."}
           {onRetry && (
             <button onClick={onRetry} className="ml-2 font-medium underline">
               Retry
@@ -51,5 +60,5 @@ export function TableError({ columns, message, onRetry }) {
         </td>
       </tr>
     </tbody>
-  )
+  );
 }

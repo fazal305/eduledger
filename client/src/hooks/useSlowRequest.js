@@ -1,5 +1,5 @@
-import { useNetworkStore } from '../store/networkStore'
+import { useNetworkStore } from "../store/networkStore";
 
 export function useSlowRequest() {
-  return useNetworkStore((s) => s.slowRequestCount > 0)
+  return useNetworkStore((s) => s.slowRequestCount > 0);
 }

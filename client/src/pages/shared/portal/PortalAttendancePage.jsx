@@ -1,32 +1,53 @@
-import { useQuery } from '@tanstack/react-query'
-import { usePortalScope } from '../../../hooks/usePortalScope'
-import ChildSelector from './ChildSelector'
-import { fetchStudentAttendanceHistory, fetchStudentAttendanceSummary } from '../../../services/attendanceService'
-import Badge from '../../../components/ui/Badge'
+import { useQuery } from "@tanstack/react-query";
+import { usePortalScope } from "../../../hooks/usePortalScope";
+import ChildSelector from "./ChildSelector";
+import {
+  fetchStudentAttendanceHistory,
+  fetchStudentAttendanceSummary,
+} from "../../../services/attendanceService";
+import Badge from "../../../components/ui/Badge";
 
-const STATUS_TONE = { present: 'success', absent: 'danger', late: 'warning', excused: 'neutral' }
-const STATUS_LABEL = { present: 'Present', absent: 'Absent', late: 'Late', excused: 'Excused' }
+const STATUS_TONE = {
+  present: "success",
+  absent: "danger",
+  late: "warning",
+  excused: "neutral",
+};
+const STATUS_LABEL = {
+  present: "Present",
+  absent: "Absent",
+  late: "Late",
+  excused: "Excused",
+};
 
 export default function PortalAttendancePage() {
-  const { studentId, isParent, children, selectedId, setSelectedId } = usePortalScope()
+  const { studentId, isParent, children, selectedId, setSelectedId } =
+    usePortalScope();
 
   const { data: summary } = useQuery({
-    queryKey: ['portal', 'attendance-summary', studentId],
+    queryKey: ["portal", "attendance-summary", studentId],
     queryFn: () => fetchStudentAttendanceSummary(studentId),
     enabled: !!studentId,
-  })
+  });
 
   const { data: history } = useQuery({
-    queryKey: ['portal', 'attendance-history', studentId],
+    queryKey: ["portal", "attendance-history", studentId],
     queryFn: () => fetchStudentAttendanceHistory(studentId),
     enabled: !!studentId,
-  })
+  });
 
-  if (!studentId) return <p className="text-sm text-ink-500">No linked student found.</p>
+  if (!studentId)
+    return <p className="text-sm text-ink-500">No linked student found.</p>;
 
   return (
     <div>
-      {isParent && <ChildSelector children={children} selectedId={selectedId} onChange={setSelectedId} />}
+      {isParent && (
+        <ChildSelector
+          children={children}
+          selectedId={selectedId}
+          onChange={setSelectedId}
+        />
+      )}
 
       <h1 className="mb-4 text-xl font-semibold text-ink-900">Attendance</h1>
 
@@ -61,7 +82,9 @@ export default function PortalAttendancePage() {
                 <td className="px-4 py-3 text-ink-600">{h.date}</td>
                 <td className="px-4 py-3 text-ink-600">{h.course_name}</td>
                 <td className="px-4 py-3">
-                  <Badge tone={STATUS_TONE[h.status]}>{STATUS_LABEL[h.status]}</Badge>
+                  <Badge tone={STATUS_TONE[h.status]}>
+                    {STATUS_LABEL[h.status]}
+                  </Badge>
                 </td>
               </tr>
             ))}
@@ -69,7 +92,7 @@ export default function PortalAttendancePage() {
         </table>
       </div>
     </div>
-  )
+  );
 }
 
 function SummaryTile({ label, value }) {
@@ -78,5 +101,5 @@ function SummaryTile({ label, value }) {
       <p className="text-2xl font-semibold text-ink-900">{value}</p>
       <p className="text-xs text-ink-500">{label}</p>
     </div>
-  )
+  );
 }

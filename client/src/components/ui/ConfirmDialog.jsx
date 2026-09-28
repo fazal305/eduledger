@@ -1,7 +1,14 @@
-import Modal from './Modal'
-import Button from './Button'
+import Modal from "./Modal";
+import Button from "./Button";
 
-export default function ConfirmDialog({ title, message, confirmLabel = 'Confirm', onConfirm, onCancel, isLoading }) {
+export default function ConfirmDialog({
+  title,
+  message,
+  confirmLabel = "Confirm",
+  onConfirm,
+  onCancel,
+  isLoading,
+}) {
   return (
     <Modal title={title} onClose={onCancel} width="max-w-sm">
       <p className="text-sm text-ink-600">{message}</p>
@@ -10,9 +17,9 @@ export default function ConfirmDialog({ title, message, confirmLabel = 'Confirm'
           Cancel
         </Button>
         <Button variant="primary" onClick={onConfirm} disabled={isLoading}>
-          {isLoading ? 'Working…' : confirmLabel}
+          {isLoading ? "Working…" : confirmLabel}
         </Button>
       </div>
     </Modal>
-  )
+  );
 }

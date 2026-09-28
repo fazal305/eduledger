@@ -1,19 +1,19 @@
-import { useEffect } from 'react'
-import { createPortal } from 'react-dom'
-import { useToastStore } from '../../store/toastStore'
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
+import { useToastStore } from "../../store/toastStore";
 
 const TONES = {
-  success: 'bg-success-100 text-success-600',
-  danger: 'bg-danger-100 text-danger-600',
-}
+  success: "bg-success-100 text-success-600",
+  danger: "bg-danger-100 text-danger-600",
+};
 
 function ToastItem({ id, message, tone }) {
-  const removeToast = useToastStore((s) => s.removeToast)
+  const removeToast = useToastStore((s) => s.removeToast);
 
   useEffect(() => {
-    const timer = setTimeout(() => removeToast(id), 3500)
-    return () => clearTimeout(timer)
-  }, [id, removeToast])
+    const timer = setTimeout(() => removeToast(id), 3500);
+    return () => clearTimeout(timer);
+  }, [id, removeToast]);
 
   return (
     <div
@@ -29,13 +29,13 @@ function ToastItem({ id, message, tone }) {
         ✕
       </button>
     </div>
-  )
+  );
 }
 
 export default function ToastViewport() {
-  const toasts = useToastStore((s) => s.toasts)
+  const toasts = useToastStore((s) => s.toasts);
 
-  if (toasts.length === 0) return null
+  if (toasts.length === 0) return null;
 
   return createPortal(
     <div className="pointer-events-none fixed inset-x-0 bottom-4 z-[60] flex flex-col items-center gap-2 px-4">
@@ -44,5 +44,5 @@ export default function ToastViewport() {
       ))}
     </div>,
     document.body,
-  )
+  );
 }

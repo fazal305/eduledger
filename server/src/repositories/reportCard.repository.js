@@ -1,4 +1,4 @@
-import { pool } from '../config/db.js'
+import { pool } from "../config/db.js";
 
 export async function getStudentForReportCard(studentId) {
   const [rows] = await pool.query(
@@ -7,6 +7,6 @@ export async function getStudentForReportCard(studentId) {
      LEFT JOIN sections sec ON sec.id = s.section_id
      WHERE s.id = ?`,
     [studentId],
-  )
-  return rows[0] ?? null
+  );
+  return rows[0] ?? null;
 }

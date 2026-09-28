@@ -1,42 +1,52 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import PageHeader from '../../../components/PageHeader'
-import Button from '../../../components/ui/Button'
-import Badge from '../../../components/ui/Badge'
-import { TableLoading, TableEmpty, TableError } from '../../../components/ui/QueryState'
-import Pagination from '../../../components/ui/Pagination'
-import { useDebouncedValue } from '../../../hooks/useDebouncedValue'
-import { fetchTeachers } from '../../../services/teacherService'
-import { fetchDepartments } from '../../../services/referenceService'
-import TeacherFormModal from './TeacherFormModal'
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import PageHeader from "../../../components/PageHeader";
+import Button from "../../../components/ui/Button";
+import Badge from "../../../components/ui/Badge";
+import {
+  TableLoading,
+  TableEmpty,
+  TableError,
+} from "../../../components/ui/QueryState";
+import Pagination from "../../../components/ui/Pagination";
+import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
+import { fetchTeachers } from "../../../services/teacherService";
+import { fetchDepartments } from "../../../services/referenceService";
+import TeacherFormModal from "./TeacherFormModal";
 
 export default function TeachersListPage() {
-  const [search, setSearch] = useState('')
-  const [departmentId, setDepartmentId] = useState('')
-  const [page, setPage] = useState(1)
-  const [showCreate, setShowCreate] = useState(false)
-  const debouncedSearch = useDebouncedValue(search)
-  const queryClient = useQueryClient()
+  const [search, setSearch] = useState("");
+  const [departmentId, setDepartmentId] = useState("");
+  const [page, setPage] = useState(1);
+  const [showCreate, setShowCreate] = useState(false);
+  const debouncedSearch = useDebouncedValue(search);
+  const queryClient = useQueryClient();
 
-  const { data: departments } = useQuery({ queryKey: ['departments'], queryFn: fetchDepartments })
+  const { data: departments } = useQuery({
+    queryKey: ["departments"],
+    queryFn: fetchDepartments,
+  });
 
   const params = {
     page,
     pageSize: 20,
     search: debouncedSearch || undefined,
     departmentId: departmentId || undefined,
-  }
+  };
 
   const { data, isPending, isError, error, refetch } = useQuery({
-    queryKey: ['teachers', params],
+    queryKey: ["teachers", params],
     queryFn: () => fetchTeachers(params),
     placeholderData: (prev) => prev,
-  })
+  });
 
   return (
     <div>
-      <PageHeader title="Teachers" description="Manage teacher records and department assignments" />
+      <PageHeader
+        title="Teachers"
+        description="Manage teacher records and department assignments"
+      />
 
       <div className="flex flex-wrap items-center gap-3 px-6 py-4">
         <input
@@ -44,8 +54,8 @@ export default function TeachersListPage() {
           placeholder="Search name or email…"
           value={search}
           onChange={(e) => {
-            setSearch(e.target.value)
-            setPage(1)
+            setSearch(e.target.value);
+            setPage(1);
           }}
           className="w-64 rounded-lg border border-ink-200 px-3 py-2 text-sm focus:border-brand-500"
           aria-label="Search teachers"
@@ -53,8 +63,8 @@ export default function TeachersListPage() {
         <select
           value={departmentId}
           onChange={(e) => {
-            setDepartmentId(e.target.value)
-            setPage(1)
+            setDepartmentId(e.target.value);
+            setPage(1);
           }}
           className="rounded-lg border border-ink-200 px-3 py-2 text-sm"
           aria-label="Filter by department"
@@ -83,28 +93,45 @@ export default function TeachersListPage() {
             </tr>
           </thead>
           {isPending && <TableLoading columns={5} />}
-          {isError && <TableError columns={5} message={error?.response?.data?.message} onRetry={refetch} />}
+          {isError && (
+            <TableError
+              columns={5}
+              message={error?.response?.data?.message}
+              onRetry={refetch}
+            />
+          )}
           {!isPending && !isError && data.data.length === 0 && (
             <TableEmpty columns={5} message="No teachers match your filters." />
           )}
           {!isPending && !isError && data.data.length > 0 && (
             <tbody>
               {data.data.map((teacher) => (
-                <tr key={teacher.id} className="border-t border-ink-100 hover:bg-ink-50">
+                <tr
+                  key={teacher.id}
+                  className="border-t border-ink-100 hover:bg-ink-50"
+                >
                   <td className="px-4 py-3">
-                    <Link to={`/admin/teachers/${teacher.id}`} className="font-medium text-ink-900 hover:text-brand-600">
+                    <Link
+                      to={`/admin/teachers/${teacher.id}`}
+                      className="font-medium text-ink-900 hover:text-brand-600"
+                    >
                       {teacher.first_name} {teacher.last_name}
                     </Link>
                   </td>
                   <td className="px-4 py-3 text-ink-500">{teacher.email}</td>
-                  <td className="px-4 py-3 text-ink-500">{teacher.department_name ?? '—'}</td>
+                  <td className="px-4 py-3 text-ink-500">
+                    {teacher.department_name ?? "—"}
+                  </td>
                   <td className="px-4 py-3">
-                    <Badge tone={teacher.is_active ? 'success' : 'neutral'}>
-                      {teacher.is_active ? 'Active' : 'Archived'}
+                    <Badge tone={teacher.is_active ? "success" : "neutral"}>
+                      {teacher.is_active ? "Active" : "Archived"}
                     </Badge>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <Link to={`/admin/teachers/${teacher.id}`} className="text-sm font-medium text-brand-600 hover:underline">
+                    <Link
+                      to={`/admin/teachers/${teacher.id}`}
+                      className="text-sm font-medium text-brand-600 hover:underline"
+                    >
                       View
                     </Link>
                   </td>
@@ -113,18 +140,20 @@ export default function TeachersListPage() {
             </tbody>
           )}
         </table>
-        {!isPending && !isError && <Pagination meta={data.meta} onPageChange={setPage} />}
+        {!isPending && !isError && (
+          <Pagination meta={data.meta} onPageChange={setPage} />
+        )}
       </div>
 
       {showCreate && (
         <TeacherFormModal
           onClose={() => setShowCreate(false)}
           onSuccess={() => {
-            setShowCreate(false)
-            queryClient.invalidateQueries({ queryKey: ['teachers'] })
+            setShowCreate(false);
+            queryClient.invalidateQueries({ queryKey: ["teachers"] });
           }}
         />
       )}
     </div>
-  )
+  );
 }

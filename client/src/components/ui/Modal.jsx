@@ -1,40 +1,45 @@
-import { useEffect, useRef } from 'react'
-import { createPortal } from 'react-dom'
+import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 
-export default function Modal({ title, onClose, children, width = 'max-w-lg' }) {
-  const dialogRef = useRef(null)
+export default function Modal({
+  title,
+  onClose,
+  children,
+  width = "max-w-lg",
+}) {
+  const dialogRef = useRef(null);
 
   useEffect(() => {
     function onKeyDown(e) {
-      if (e.key === 'Escape') {
-        onClose()
-        return
+      if (e.key === "Escape") {
+        onClose();
+        return;
       }
-      if (e.key === 'Tab' && dialogRef.current) {
+      if (e.key === "Tab" && dialogRef.current) {
         const focusable = dialogRef.current.querySelectorAll(
           'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
-        )
-        if (focusable.length === 0) return
-        const first = focusable[0]
-        const last = focusable[focusable.length - 1]
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
         if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault()
-          last.focus()
+          e.preventDefault();
+          last.focus();
         } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault()
-          first.focus()
+          e.preventDefault();
+          first.focus();
         }
       }
     }
-    document.addEventListener('keydown', onKeyDown)
+    document.addEventListener("keydown", onKeyDown);
 
     const focusable = dialogRef.current?.querySelector(
       'input, select, textarea, button:not([aria-label="Close"])',
-    )
-    focusable?.focus()
+    );
+    focusable?.focus();
 
-    return () => document.removeEventListener('keydown', onKeyDown)
-  }, [onClose])
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-ink-900/40 p-4 pt-16 animate-[fade-in_0.15s_ease-out]">
@@ -59,5 +64,5 @@ export default function Modal({ title, onClose, children, width = 'max-w-lg' }) 
       </div>
     </div>,
     document.body,
-  )
+  );
 }

@@ -1,9 +1,9 @@
-import { useOnlineStatus } from '../../hooks/useOnlineStatus'
+import { useOnlineStatus } from "../../hooks/useOnlineStatus";
 
 export default function OfflineBanner() {
-  const isOnline = useOnlineStatus()
+  const isOnline = useOnlineStatus();
 
-  if (isOnline) return null
+  if (isOnline) return null;
 
   return (
     <div
@@ -12,5 +12,5 @@ export default function OfflineBanner() {
     >
       You're offline. Changes won't save until your connection is back.
     </div>
-  )
+  );
 }

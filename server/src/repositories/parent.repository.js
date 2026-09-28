@@ -1,4 +1,4 @@
-import { pool } from '../config/db.js'
+import { pool } from "../config/db.js";
 
 export async function getChildrenForParent(parentId) {
   const [rows] = await pool.query(
@@ -9,14 +9,14 @@ export async function getChildrenForParent(parentId) {
      WHERE ps.parent_id = ?
      ORDER BY s.first_name`,
     [parentId],
-  )
-  return rows
+  );
+  return rows;
 }
 
 export async function isParentOfStudent(parentId, studentId) {
   const [rows] = await pool.query(
-    'SELECT 1 FROM parent_student WHERE parent_id = ? AND student_id = ? LIMIT 1',
+    "SELECT 1 FROM parent_student WHERE parent_id = ? AND student_id = ? LIMIT 1",
     [parentId, studentId],
-  )
-  return rows.length > 0
+  );
+  return rows.length > 0;
 }

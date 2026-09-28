@@ -6,5 +6,5 @@ export default function UnauthorizedPage() {
         Your account doesn't have permission to view this page.
       </p>
     </div>
-  )
+  );
 }

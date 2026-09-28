@@ -1,26 +1,33 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import PageHeader from '../../../components/PageHeader'
-import Button from '../../../components/ui/Button'
-import Badge from '../../../components/ui/Badge'
-import { TableLoading, TableEmpty, TableError } from '../../../components/ui/QueryState'
-import Pagination from '../../../components/ui/Pagination'
-import { useDebouncedValue } from '../../../hooks/useDebouncedValue'
-import { fetchStudents } from '../../../services/studentService'
-import { fetchSections } from '../../../services/referenceService'
-import StudentFormModal from './StudentFormModal'
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import PageHeader from "../../../components/PageHeader";
+import Button from "../../../components/ui/Button";
+import Badge from "../../../components/ui/Badge";
+import {
+  TableLoading,
+  TableEmpty,
+  TableError,
+} from "../../../components/ui/QueryState";
+import Pagination from "../../../components/ui/Pagination";
+import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
+import { fetchStudents } from "../../../services/studentService";
+import { fetchSections } from "../../../services/referenceService";
+import StudentFormModal from "./StudentFormModal";
 
 export default function StudentsListPage() {
-  const [search, setSearch] = useState('')
-  const [sectionId, setSectionId] = useState('')
-  const [isActive, setIsActive] = useState('true')
-  const [page, setPage] = useState(1)
-  const [showCreate, setShowCreate] = useState(false)
-  const debouncedSearch = useDebouncedValue(search)
-  const queryClient = useQueryClient()
+  const [search, setSearch] = useState("");
+  const [sectionId, setSectionId] = useState("");
+  const [isActive, setIsActive] = useState("true");
+  const [page, setPage] = useState(1);
+  const [showCreate, setShowCreate] = useState(false);
+  const debouncedSearch = useDebouncedValue(search);
+  const queryClient = useQueryClient();
 
-  const { data: sections } = useQuery({ queryKey: ['sections'], queryFn: () => fetchSections() })
+  const { data: sections } = useQuery({
+    queryKey: ["sections"],
+    queryFn: () => fetchSections(),
+  });
 
   const params = {
     page,
@@ -28,24 +35,27 @@ export default function StudentsListPage() {
     search: debouncedSearch || undefined,
     sectionId: sectionId || undefined,
     isActive: isActive || undefined,
-  }
+  };
 
   const { data, isPending, isError, error, refetch } = useQuery({
-    queryKey: ['students', params],
+    queryKey: ["students", params],
     queryFn: () => fetchStudents(params),
     placeholderData: (prev) => prev,
-  })
+  });
 
   function resetToFirstPage(setter) {
     return (value) => {
-      setter(value)
-      setPage(1)
-    }
+      setter(value);
+      setPage(1);
+    };
   }
 
   return (
     <div>
-      <PageHeader title="Students" description="Register, search, and manage student records" />
+      <PageHeader
+        title="Students"
+        description="Register, search, and manage student records"
+      />
 
       <div className="flex flex-wrap items-center gap-3 px-6 py-4">
         <input
@@ -80,7 +90,9 @@ export default function StudentsListPage() {
           <option value="">All statuses</option>
         </select>
         <div className="ml-auto">
-          <Button onClick={() => setShowCreate(true)}>+ Register student</Button>
+          <Button onClick={() => setShowCreate(true)}>
+            + Register student
+          </Button>
         </div>
       </div>
 
@@ -98,7 +110,11 @@ export default function StudentsListPage() {
           </thead>
           {isPending && <TableLoading columns={6} />}
           {isError && (
-            <TableError columns={6} message={error?.response?.data?.message} onRetry={refetch} />
+            <TableError
+              columns={6}
+              message={error?.response?.data?.message}
+              onRetry={refetch}
+            />
           )}
           {!isPending && !isError && data.data.length === 0 && (
             <TableEmpty columns={6} message="No students match your filters." />
@@ -106,7 +122,10 @@ export default function StudentsListPage() {
           {!isPending && !isError && data.data.length > 0 && (
             <tbody>
               {data.data.map((student) => (
-                <tr key={student.id} className="border-t border-ink-100 hover:bg-ink-50">
+                <tr
+                  key={student.id}
+                  className="border-t border-ink-100 hover:bg-ink-50"
+                >
                   <td className="px-4 py-3">
                     <Link
                       to={`${student.id}`}
@@ -115,16 +134,25 @@ export default function StudentsListPage() {
                       {student.first_name} {student.last_name}
                     </Link>
                   </td>
-                  <td className="px-4 py-3 text-ink-500">{student.student_number}</td>
-                  <td className="px-4 py-3 text-ink-500">{student.section_name ?? '—'}</td>
-                  <td className="px-4 py-3 text-ink-500">{student.admission_date}</td>
+                  <td className="px-4 py-3 text-ink-500">
+                    {student.student_number}
+                  </td>
+                  <td className="px-4 py-3 text-ink-500">
+                    {student.section_name ?? "—"}
+                  </td>
+                  <td className="px-4 py-3 text-ink-500">
+                    {student.admission_date}
+                  </td>
                   <td className="px-4 py-3">
-                    <Badge tone={student.is_active ? 'success' : 'neutral'}>
-                      {student.is_active ? 'Active' : 'Archived'}
+                    <Badge tone={student.is_active ? "success" : "neutral"}>
+                      {student.is_active ? "Active" : "Archived"}
                     </Badge>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <Link to={`${student.id}`} className="text-sm font-medium text-brand-600 hover:underline">
+                    <Link
+                      to={`${student.id}`}
+                      className="text-sm font-medium text-brand-600 hover:underline"
+                    >
                       View
                     </Link>
                   </td>
@@ -133,18 +161,20 @@ export default function StudentsListPage() {
             </tbody>
           )}
         </table>
-        {!isPending && !isError && <Pagination meta={data.meta} onPageChange={setPage} />}
+        {!isPending && !isError && (
+          <Pagination meta={data.meta} onPageChange={setPage} />
+        )}
       </div>
 
       {showCreate && (
         <StudentFormModal
           onClose={() => setShowCreate(false)}
           onSuccess={() => {
-            setShowCreate(false)
-            queryClient.invalidateQueries({ queryKey: ['students'] })
+            setShowCreate(false);
+            queryClient.invalidateQueries({ queryKey: ["students"] });
           }}
         />
       )}
     </div>
-  )
+  );
 }

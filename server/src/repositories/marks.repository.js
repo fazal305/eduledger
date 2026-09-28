@@ -1,4 +1,4 @@
-import { pool } from '../config/db.js'
+import { pool } from "../config/db.js";
 
 export async function listRosterWithMarks(examId, classId) {
   const [rows] = await pool.query(
@@ -10,19 +10,25 @@ export async function listRosterWithMarks(examId, classId) {
      WHERE e.class_id = ? AND e.status = 'active'
      ORDER BY s.last_name, s.first_name`,
     [examId, classId],
-  )
-  return rows
+  );
+  return rows;
 }
 
 export async function upsertMarks(examId, records) {
-  if (records.length === 0) return
-  const values = records.map((r) => [examId, r.studentId, r.obtainedMarks, r.grade, r.remarks ?? null])
+  if (records.length === 0) return;
+  const values = records.map((r) => [
+    examId,
+    r.studentId,
+    r.obtainedMarks,
+    r.grade,
+    r.remarks ?? null,
+  ]);
   await pool.query(
     `INSERT INTO marks (exam_id, student_id, obtained_marks, grade, remarks)
      VALUES ?
      ON DUPLICATE KEY UPDATE obtained_marks = VALUES(obtained_marks), grade = VALUES(grade), remarks = VALUES(remarks)`,
     [values],
-  )
+  );
 }
 
 export async function getStudentReportCardMarks(studentId, academicYearId) {
@@ -36,6 +42,6 @@ export async function getStudentReportCardMarks(studentId, academicYearId) {
      WHERE m.student_id = ? AND cl.academic_year_id = ?
      ORDER BY co.name, ex.exam_date`,
     [studentId, academicYearId],
-  )
-  return rows
+  );
+  return rows;
 }
