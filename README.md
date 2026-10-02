@@ -178,10 +178,6 @@ deployment runs against the same seeded data.
 
 **Live demo URL:** https://eduledger-ebon.vercel.app
 
-## Screenshots
-
-_Added once the UI has enough real screens to be worth screenshotting (Phase 2+)._
-
 ## Future roadmap
 
 See the Planned section above and `docs/architecture.md`. Phases are tracked in the
