@@ -182,3 +182,11 @@ deployment runs against the same seeded data.
 
 See the Planned section above and `docs/architecture.md`. Phases are tracked in the
 original project brief; this README's Implemented/Planned split is the current source of truth.
+
+## License
+
+Free for personal, educational, and noncommercial use under the [PolyForm Noncommercial License 1.0.0](LICENSE).
+
+Commercial use requires a paid commercial license. Contact fazalabbas2002@gmail.com.
+
+Versions up to and including `v0.1.0-mit` were released under the MIT License and remain available under MIT.

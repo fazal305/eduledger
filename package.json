@@ -2,6 +2,7 @@
   "name": "eduledger",
   "private": true,
   "version": "0.1.0",
+  "license": "PolyForm-Noncommercial-1.0.0",
   "description": "EduLedger — School & Academy Management, organized.",
   "scripts": {
     "dev:client": "npm --prefix client run dev",
