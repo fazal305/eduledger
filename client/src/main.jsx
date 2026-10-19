@@ -14,16 +14,11 @@ const environment = /^(localhost|127\.0\.0\.1)$/.test(hostname)
     : "production";
 
 if (environment !== "development") {
-  let reports = 0;
-  const cap = (event) => {
-    if (++reports > 20) event.stopImmediatePropagation();
-  };
-  window.addEventListener("error", cap);
-  window.addEventListener("unhandledrejection", cap);
   init({
     key: "bwp_pk_JUSA0tFRnF0c2eqclp0R8kWkm2QfGxHMlHDLGl2z",
     endpoint: "https://bugwatcher-pings-api.onrender.com/api/v1/ping",
     environment,
+    maxReports: 20,
   });
 }
 
